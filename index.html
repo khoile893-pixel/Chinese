@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Sư Tiếng Trung AI & SRS - Super Premium</title>
+    <style>
+        :root { --primary-color: #ff4757; --primary-hover: #e84118; --bg-color: #f1f2f6; --card-bg: #ffffff; --text-main: #2f3542; --text-sub: #747d8c; --border-radius-s: 8px; --border-radius-m: 15px; --border-radius-pill: 50px; --shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); max-width: 650px; margin: auto; padding: 40px 20px; line-height: 1.6; }
+        h1, h2, h3 { color: var(--text-main); font-weight: 800; margin-top: 0; }
+        h1 { text-align: center; font-size: 2.2rem; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        h1 .emoji { font-size: 2.5rem; }
+        h3 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--primary-color); }
+        p { color: var(--text-sub); margin: 0 0 10px 0; }
+        .card { background-color: var(--card-bg); padding: 30px; border-radius: var(--border-radius-m); margin-bottom: 25px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #e1e1e1; border-radius: var(--border-radius-s); font-size: 1rem; color: var(--text-main); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1); }
+        textarea { resize: vertical; min-height: 100px; }
+        button { background: var(--primary-color); color: white; padding: 15px 20px; border: none; border-radius: var(--border-radius-pill); cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2); margin-bottom: 10px; }
+        button:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 7px 14px rgba(255, 71, 87, 0.3); }
+        button:active { transform: translateY(0); }
+        button.secondary-btn { background: #747d8c; box-shadow: 0 4px 6px rgba(116, 125, 140, 0.2); }
+        button.secondary-btn:hover { background: #2f3542; box-shadow: 0 7px 14px rgba(47, 53, 66, 0.3); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #testArea, #backupArea, #vocabArea, #dailyContentArea { display: none; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #e1e1e1; }
+        .ai-box { background: #fffafa; padding: 20px; border-radius: var(--border-radius-s); border-left: 5px solid var(--primary-color); margin-bottom: 20px; font-size: 1.1rem; color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); white-space: pre-wrap; }
+        .status-msg { font-weight: bold; text-align: center; margin-top: 10px; }
+        .success { color: #2ed573; }
+        .info { color: var(--primary-color); }
+        .error { color: #ff4757; }
+        .fast-input-wrapper { position: relative; }
+        .fast-hint { font-size: 0.85rem; color: #a4b0be; position: absolute; right: 15px; top: 18px; pointer-events: none; }
+        
+        /* Banner cảnh báo quá hạn */
+        #overdueBanner { background: #ff4757; color: white; padding: 15px 20px; border-radius: var(--border-radius-m); margin-bottom: 25px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); animation: pulse 2s infinite; }
+        #overdueBanner button { background: white; color: #ff4757; padding: 8px 15px; width: auto; margin: 0; box-shadow: none; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        /* Kho từ vựng List */
+        .vocab-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .vocab-item:last-child { border-bottom: none; }
+        .vocab-info { flex: 1; }
+        .vocab-hanzi { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); }
+        .vocab-pinyin { font-size: 0.9rem; color: #a4b0be; margin-left: 5px; }
+        .vocab-meaning { font-size: 0.95rem; display: block; }
+        .vocab-actions button { padding: 5px 10px; font-size: 0.9rem; margin-left: 5px; width: auto; box-shadow: none; }
+        .btn-normal { background: #dfe4ea; color: #2f3542; }
+        .btn-easy { background: #2ed573; color: white; }
+        .btn-hard { background: #ffa502; color: white; }
+        .vocab-list-container { max-height: 350px; overflow-y: auto; border: 1px solid #e1e1e1; border-radius: var(--border-radius-s); padding: 5px; }
+    </style>
+</head>
+<body>
+
+    <div id="overdueBanner">
+        <span style="font-weight: bold;"><span class="emoji">🚨</span> Cảnh báo: Có <span id="overdueCount">0</span> từ nợ đọng quá 3 ngày!</span>
+        <button onclick="startOverdueTest()">Dọn Dẹp Ngay</button>
+    </div>
+
+    <h1><span class="emoji">🀄</span> Gia Sư Tiếng Trung AI</h1>
+    
+    <div class="card">
+        <h3><span class="emoji">🔑</span> 1. Cài đặt AI (Google Gemini)</h3>
+        <input type="password" id="apiKey" placeholder="Dán API Key của bạn vào đây (Chỉ cần dán 1 lần)..." oninput="saveApiKey()">
+        <p id="keyStatus" class="status-msg success" style="font-size: 0.9rem; margin-top: 0;"></p>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">⚡</span> 2. Thêm Từ Vựng Siêu Tốc</h3>
+        <p style="font-size: 0.9rem; margin-top: -10px;">Nhập chữ Hán (cách nhau bằng phẩy). Hệ thống tự động lọc từ đã có, điền Pinyin và lưu.</p>
+        <div class="fast-input-wrapper">
+            <input type="text" id="hanzi" placeholder="VD: 图书馆, 苹果, 老师..." onkeypress="handleEnter(event)">
+            <span class="fast-hint">Nhấn Enter để lưu</span>
+        </div>
+        <button onclick="addWordsFast()"><span class="emoji">🚀</span> Xử Lý & Lưu Tự Động</button>
+        <p id="addStatus" class="status-msg"></p>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">🧠</span> 3. Kiểm Tra SRS Hôm Nay</h3>
+        <p id="dueCount" class="status-msg info">Đang rà soát trí nhớ...</p>
+        <button onclick="startTest('normal')" id="startBtn"><span class="emoji">🎯</span> Bắt Đầu Luyện Tập</button>
+        
+        <div id="testArea">
+            <h3 id="testTitle">Dịch sang Tiếng Trung:</h3>
+            <div id="aiSentences" class="ai-box">AI đang soạn đề bài...</div>
+            <textarea id="feedback" rows="3" placeholder="Ví dụ: Tôi quên từ câu 3, quên nghĩa từ '你好'..."></textarea>
+            <button onclick="submitFeedback()"><span class="emoji">✅</span> Hoàn Thành & Đánh Giá</button>
+            <p id="evalStatus" class="status-msg info"></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">☕</span> 4. Góc Bản Xứ Trong Ngày</h3>
+        <p style="font-size: 0.9rem; margin-top: -10px;">Đọc tiếng Trung tự nhiên được thiết kế riêng dựa trên đúng trình độ và kho từ vựng của bạn.</p>
+        <button class="secondary-btn" onclick="generateDailyContent()"><span class="emoji">🎲</span> Khám phá bài học hôm nay</button>
+        <p id="dailyStatus" class="status-msg info"></p>
+        <div id="dailyContentArea" class="ai-box"></div>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">📚</span> 5. Kho Từ Vựng & Phân Loại</h3>
+        <p style="font-size: 0.9rem; margin-top: -10px;">Đánh dấu từ Dễ/Khó để tối ưu lịch ôn tập.</p>
+        <button class="secondary-btn" onclick="toggleVocab()"><span class="emoji">👁️</span> Hiển thị danh sách từ</button>
+        <div id="vocabArea">
+            <div id="vocabList" class="vocab-list-container"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">🔄</span> 6. Đồng bộ thiết bị</h3>
+        <button class="secondary-btn" onclick="toggleBackup()"><span class="emoji">⚙️</span> Menu đồng bộ</button>
+        <div id="backupArea">
+            <textarea id="backupData" rows="4" placeholder="Dán mã dữ liệu vào đây..."></textarea>
+            <div class="grid-2">
+                <button class="secondary-btn" onclick="exportData()"><span class="emoji">📤</span> Xuất mã</button>
+                <button class="secondary-btn" onclick="importData()"><span class="emoji">📥</span> Nhập mã</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AI_MODEL = "gemini-2.5-flash"; 
+        let vocab = [];
+        let currentTestWords = [];
+        let isTestingOverdue = false;
+        
+        window.onload = function() {
+            let savedKey = localStorage.getItem('gemini_api_key_v4');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+                document.getElementById('keyStatus').innerText = "✓ Key đã được tải sẵn.";
+            }
+            let savedVocab = localStorage.getItem('vocab_db_v4');
+            if (savedVocab) {
+                vocab = JSON.parse(savedVocab);
+                vocab.forEach(v => { if(!v.difficulty) v.difficulty = 'normal'; });
+            }
+            updateDashboard();
+        };
+
+        function saveApiKey() {
+            let key = document.getElementById('apiKey').value.trim();
+            localStorage.setItem('gemini_api_key_v4', key);
+            if(key) document.getElementById('keyStatus').innerText = "✓ Đã tự động lưu Key.";
+            else document.getElementById('keyStatus').innerText = "";
+        }
+
+        function saveDb() { 
+            localStorage.setItem('vocab_db_v4', JSON.stringify(vocab)); 
+            updateDashboard();
+            renderVocabList();
+        }
+
+        function getDueWords() {
+            let today = new Date().toISOString().split('T')[0];
+            return vocab.filter(w => w.nextReview <= today);
+        }
+
+        function getOverdueWords() {
+            let today = new Date();
+            today.setDate(today.getDate() - 3); 
+            let overdueDateStr = today.toISOString().split('T')[0];
+            return vocab.filter(w => w.nextReview <= overdueDateStr);
+        }
+
+        function updateDashboard() {
+            let due = getDueWords();
+            document.getElementById('dueCount').innerHTML = `Hôm nay cần ôn: <b>${due.length}</b> từ. (Tổng: ${vocab.length})`;
+            
+            let overdue = getOverdueWords();
+            let banner = document.getElementById('overdueBanner');
+            if(overdue.length > 0) {
+                document.getElementById('overdueCount').innerText = overdue.length;
+                banner.style.display = 'flex';
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        // --- NHẬP TỪ SIÊU TỐC & LỌC TRÙNG ---
+        function handleEnter(e) { if (e.key === 'Enter') addWordsFast(); }
+
+        async function addWordsFast() {
+            let hInput = document.getElementById('hanzi').value.trim();
+            let key = document.getElementById('apiKey').value.trim();
+            let status = document.getElementById('addStatus');
+
+            if (!hInput) return status.innerText = "❌ Vui lòng nhập ít nhất 1 chữ Hán!";
+            if (!key) return status.innerText = "❌ Vui lòng dán API Key ở phần 1!";
+
+            status.className = "status-msg info";
+            status.innerText = "⏳ Đang tra cứu và kiểm tra trùng lặp...";
+            
+            let prompt = `Phân tích tiếng Trung: "${hInput}". Trả về MỘT mảng JSON duy nhất. KHÔNG giải thích, KHÔNG markdown. VD: [{"hanzi": "你好", "pinyin": "nǐ hǎo", "meaning": "Xin chào"}]`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                
+                let aiText = data.candidates[0].content.parts[0].text;
+                let startIndex = aiText.indexOf('[');
+                let endIndex = aiText.lastIndexOf(']');
+                if (startIndex === -1 || endIndex === -1) throw new Error("AI không trả về định dạng JSON.");
+                
+                let cleanJsonString = aiText.substring(startIndex, endIndex + 1);
+                let results = JSON.parse(cleanJsonString);
+                
+                let today = new Date().toISOString().split('T')[0];
+                let addedCount = 0;
+                let skippedCount = 0;
+                
+                results.forEach(item => {
+                    let exists = vocab.some(v => v.hanzi === item.hanzi);
+                    if(!exists) {
+                        vocab.push({ hanzi: item.hanzi, pinyin: item.pinyin, meaning: item.meaning, nextReview: today, interval: 1, ease: 2.5, difficulty: 'normal' });
+                        addedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                });
+                saveDb();
+                
+                document.getElementById('hanzi').value = ''; 
+                status.className = "status-msg success";
+                status.innerText = `✅ Đã lưu ${addedCount} từ mới. (Bỏ qua ${skippedCount} từ đã có).`;
+                setTimeout(() => { status.innerText = ''; }, 4000);
+            } catch (e) {
+                status.className = "status-msg error";
+                status.innerText = `❌ Lỗi: ${e.message}`;
+            }
+        }
+
+        // --- KHO TỪ VỰNG & GẮN CỜ ---
+        function toggleVocab() {
+            let area = document.getElementById('vocabArea');
+            if (area.style.display === 'block') {
+                area.style.display = 'none';
+            } else {
+                area.style.display = 'block';
+                renderVocabList();
+            }
+        }
+
+        function setDifficulty(hanzi, diff) {
+            let idx = vocab.findIndex(v => v.hanzi === hanzi);
+            if (idx > -1) {
+                vocab[idx].difficulty = diff;
+                saveDb();
+            }
+        }
+
+        function renderVocabList() {
+            let listDiv = document.getElementById('vocabList');
+            listDiv.innerHTML = '';
+            
+            let sortedVocab = [...vocab].reverse(); 
+            
+            if(sortedVocab.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center; color:#ccc;">Kho từ vựng trống.</p>';
+                return;
+            }
+
+            sortedVocab.forEach(v => {
+                let diff = v.difficulty || 'normal';
+                let btnNormal = diff === 'normal' ? `<button class="btn-normal" style="border: 2px solid #555;">⚪ Bình thường</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'normal')">⚪</button>`;
+                let btnEasy = diff === 'easy' ? `<button class="btn-easy" style="border: 2px solid #228b22;">🟢 Dễ</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'easy')">🟢</button>`;
+                let btnHard = diff === 'hard' ? `<button class="btn-hard" style="border: 2px solid #b33939;">🔥 Khó</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'hard')">🔥</button>`;
+
+                let itemHtml = `
+                    <div class="vocab-item">
+                        <div class="vocab-info">
+                            <span class="vocab-hanzi">${v.hanzi}</span>
+                            <span class="vocab-pinyin">(${v.pinyin})</span>
+                            <span class="vocab-meaning">${v.meaning}</span>
+                        </div>
+                        <div class="vocab-actions">
+                            ${btnHard} ${btnNormal} ${btnEasy}
+                        </div>
+                    </div>
+                `;
+                listDiv.innerHTML += itemHtml;
+            });
+        }
+
+        // --- HỆ THỐNG KIỂM TRA (TEST) ---
+        function startOverdueTest() {
+            startTest('overdue');
+        }
+
+        async function startTest(mode) {
+            let key = document.getElementById('apiKey').value.trim();
+            if (!key) return alert("Chưa dán API Key ở phần 1!");
+
+            if (mode === 'overdue') {
+                currentTestWords = getOverdueWords().slice(0, 5);
+                isTestingOverdue = true;
+                document.getElementById('testTitle').innerText = "🔥 Dọn dẹp nợ đọng (Dịch sang Tiếng Trung):";
+            } else {
+                currentTestWords = getDueWords().slice(0, 5);
+                isTestingOverdue = false;
+                document.getElementById('testTitle').innerText = "Dịch sang Tiếng Trung:";
+            }
+
+            if (currentTestWords.length === 0) return alert("🎉 Tuyệt vời! Không còn bài nào ở mục này.");
+            
+            document.getElementById('testArea').style.display = 'block';
+            document.getElementById('aiSentences').innerText = "⏳ AI đang soạn đề bài...";
+            
+            let wordList = currentTestWords.map(w => `${w.hanzi} (${w.meaning})`).join(", ");
+            let prompt = `Bạn là giáo viên. Viết 5 câu tiếng Việt chứa nghĩa các từ sau để học sinh dịch sang Trung: ${wordList}. Yêu cầu: Viết tự nhiên, thực tế. Chỉ in 5 câu, đánh số 1-5.`;
+            
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                document.getElementById('aiSentences').innerText = data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                document.getElementById('aiSentences').innerText = `❌ Lỗi kết nối AI: ${e.message}`;
+            }
+        }
+
+        async function submitFeedback() {
+            let feedback = document.getElementById('feedback').value;
+            let key = document.getElementById('apiKey').value.trim();
+            if (!feedback) return alert("Vui lòng nhập phản hồi!");
+            
+            document.getElementById('evalStatus').innerText = "⏳ Đang ghi nhận thuật toán SRS...";
+            let wordList = currentTestWords.map(w => w.hanzi).join(", ");
+            let prompt = `Danh sách: ${wordList}. Học sinh: "${feedback}". Chữ Hán nào bị QUÊN? Chỉ in ra chữ bị quên, cách bằng phẩy. Nếu không quên trả về "Không".`;
+            
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                
+                let forgotten = data.candidates[0].content.parts[0].text.trim();
+                
+                currentTestWords.forEach(w => {
+                    let isRemembered = !forgotten.includes(w.hanzi);
+                    let idx = vocab.findIndex(v => v.hanzi === w.hanzi);
+                    if (idx > -1) {
+                        let diff = vocab[idx].difficulty || 'normal';
+                        
+                        if (isRemembered) {
+                            let newInterval = vocab[idx].interval * vocab[idx].ease;
+                            if (diff === 'easy') newInterval *= 2.0; 
+                            if (diff === 'hard') newInterval *= 0.6; 
+                            
+                            vocab[idx].interval = Math.max(1, Math.floor(newInterval));
+                            vocab[idx].ease += 0.1;
+                        } else {
+                            vocab[idx].interval = 1;
+                            vocab[idx].ease = Math.max(1.3, vocab[idx].ease - 0.2);
+                        }
+                        let nextDate = new Date();
+                        nextDate.setDate(nextDate.getDate() + vocab[idx].interval);
+                        vocab[idx].nextReview = nextDate.toISOString().split('T')[0];
+                    }
+                });
+                
+                saveDb();
+                alert("✅ Đã cập nhật xong!");
+                document.getElementById('testArea').style.display = 'none';
+                document.getElementById('feedback').value = '';
+                document.getElementById('evalStatus').innerText = '';
+                
+                if(isTestingOverdue && getOverdueWords().length > 0) {
+                    if(confirm("Bạn vẫn còn từ nợ đọng. Dọn dẹp tiếp chứ?")) startOverdueTest();
+                }
+            } catch (e) {
+                document.getElementById('evalStatus').innerText = `❌ Lỗi chấm điểm: ${e.message}`;
+            }
+        }
+
+        // --- GÓC BẢN XỨ (STRICT VOCABULARY MODE) ---
+        async function generateDailyContent() {
+            let area = document.getElementById('dailyContentArea');
+            let status = document.getElementById('dailyStatus');
+            let key = document.getElementById('apiKey').value.trim();
+            
+            if (!key) return alert("Chưa dán API Key!");
+            if (vocab.length < 5) return alert("Kho từ vựng của bạn cần ít nhất 5 từ để AI có thể viết bài.");
+
+            let todayStr = new Date().toISOString().split('T')[0];
+            let savedContent = localStorage.getItem('daily_content_v4');
+            let savedDate = localStorage.getItem('daily_date_v4');
+
+            area.style.display = 'block';
+
+            if (savedDate === todayStr && savedContent) {
+                area.innerHTML = savedContent;
+                status.innerText = "✓ Đã tải bài học hôm nay từ bộ nhớ.";
+                return;
+            }
+
+            status.innerText = "⏳ AI đang phân tích kho từ vựng hiện tại của bạn để soạn bài...";
+            area.innerHTML = "";
+
+            let rand = Math.random();
+            let format, targetCount;
+            if (vocab.length <= 15) {
+                format = "một câu nói hoặc đoạn văn siêu ngắn";
+                targetCount = vocab.length; 
+            } else if (rand < 0.3) { 
+                format = "một câu châm ngôn hoặc triết lý ngắn"; 
+                targetCount = Math.floor(Math.random() * 6) + 5; 
+            } else if (rand < 0.6) { 
+                format = "một đoạn hội thoại giao tiếp hàng ngày"; 
+                targetCount = Math.floor(Math.random() * 16) + 15; 
+            } else { 
+                format = "một đoạn văn kể chuyện ngắn"; 
+                targetCount = Math.floor(Math.random() * 41) + 40; 
+            }
+
+            let poolSize = Math.min(vocab.length, Math.max(100, targetCount * 3));
+            let shuffled = [...vocab].sort(() => 0.5 - Math.random());
+            let wordPool = shuffled.slice(0, poolSize).map(v => v.hanzi).join(", ");
+
+            // LỆNH ÉP AI TUYỆT ĐỐI KHÔNG DÙNG TỪ MỚI LẠ
+            let prompt = `Bạn là một giáo viên tiếng Trung. Dưới đây là TẤT CẢ các từ vựng mà học sinh đã học:
+[${wordPool}].
+
+Hãy viết ${format} bằng tiếng Trung.
+
+Yêu cầu TUYỆT ĐỐI (Phải tuân thủ nghiêm ngặt):
+1. CHỈ SỬ DỤNG các từ vựng trong danh sách trên làm nòng cốt ý nghĩa.
+2. Bạn được phép dùng thêm các hư từ, đại từ, hoặc cấu trúc ngữ pháp cơ bản (như 的, 是, 在, 我, 你, 了...) để nối câu cho đúng ngữ pháp, nhưng KHÔNG ĐƯỢC THÊM bất kỳ danh từ, động từ hay tính từ mới nào mang ý nghĩa phức tạp nằm ngoài danh sách.
+3. Độ dài của đoạn văn phải thuận theo số lượng từ vựng hiện có. Nếu danh sách từ vựng ít, hãy viết thật ngắn gọn.
+4. Văn phong phải thực sự tự nhiên, chuẩn giao tiếp thực tế như người bản xứ.
+5. In đậm các từ vựng được lấy từ danh sách.
+6. Cung cấp Pinyin cho toàn bài.
+7. Cung cấp bản dịch tiếng Việt mượt mà.`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json();
+                if(data.error) throw new Error(data.error.message);
+                
+                let resultHtml = data.candidates[0].content.parts[0].text;
+                
+                localStorage.setItem('daily_content_v4', resultHtml);
+                localStorage.setItem('daily_date_v4', todayStr);
+                
+                area.innerHTML = resultHtml;
+                status.innerText = "🎉 Chúc bạn luyện đọc vui vẻ!";
+            } catch (e) {
+                status.innerText = `❌ Lỗi tải bài học: ${e.message}`;
+            }
+        }
+
+        // --- ĐỒNG BỘ ---
+        function toggleBackup() { let a = document.getElementById('backupArea'); a.style.display = a.style.display === 'block' ? 'none' : 'block'; }
+        function exportData() { document.getElementById('backupData').value = JSON.stringify(vocab); alert("Đã tạo mã xuất!"); }
+        function importData() { 
+            try { 
+                vocab = JSON.parse(document.getElementById('backupData').value); 
+                vocab.forEach(v => { if(!v.difficulty) v.difficulty = 'normal'; });
+                saveDb(); 
+                alert("Khôi phục thành công!"); 
+                toggleBackup(); 
+            } catch { alert("Mã lỗi!"); } 
+        }
+    </script>
+</body>
+</html>
