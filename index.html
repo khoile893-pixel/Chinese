@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Sư Tiếng Trung AI & SRS - Premium V5.5</title>
+    <style>
+        :root { --primary-color: #ff4757; --primary-hover: #e84118; --bg-color: #f1f2f6; --card-bg: #ffffff; --text-main: #2f3542; --text-sub: #747d8c; --border-radius-s: 8px; --border-radius-m: 15px; --border-radius-pill: 50px; --shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); max-width: 650px; margin: auto; padding: 40px 20px; line-height: 1.6; }
+        h1, h2, h3 { color: var(--text-main); font-weight: 800; margin-top: 0; }
+        h1 { text-align: center; font-size: 2.2rem; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        h1 .emoji { font-size: 2.5rem; }
+        h3 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--primary-color); }
+        p { color: var(--text-sub); margin: 0 0 10px 0; }
+        .card { background-color: var(--card-bg); padding: 30px; border-radius: var(--border-radius-m); margin-bottom: 25px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #e1e1e1; border-radius: var(--border-radius-s); font-size: 1rem; color: var(--text-main); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1); }
+        textarea { resize: vertical; min-height: 80px; }
+        button { background: var(--primary-color); color: white; padding: 15px 20px; border: none; border-radius: var(--border-radius-pill); cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2); margin-bottom: 10px; }
+        button:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 7px 14px rgba(255, 71, 87, 0.3); }
+        button:active { transform: translateY(0); }
+        button.secondary-btn { background: #747d8c; box-shadow: 0 4px 6px rgba(116, 125, 140, 0.2); }
+        button.secondary-btn:hover { background: #2f3542; box-shadow: 0 7px 14px rgba(47, 53, 66, 0.3); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #testArea, #backupArea, #vocabArea, #dailyContentArea { display: none; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #e1e1e1; }
+        
+        .ai-box { background: #fffafa; padding: 25px; border-radius: var(--border-radius-s); border-left: 5px solid var(--primary-color); margin-bottom: 20px; font-size: 1.1rem; color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .status-msg { font-weight: bold; text-align: center; margin-top: 10px; }
+        .success { color: #2ed573; }
+        .info { color: var(--primary-color); }
+        .error { color: #ff4757; }
+        .fast-input-wrapper { position: relative; }
+        .fast-hint { font-size: 0.85rem; color: #a4b0be; position: absolute; right: 15px; top: 18px; pointer-events: none; }
+        
+        #overdueBanner { background: #ff4757; color: white; padding: 15px 20px; border-radius: var(--border-radius-m); margin-bottom: 25px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); animation: pulse 2s infinite; }
+        #overdueBanner button { background: white; color: #ff4757; padding: 8px 15px; width: auto; margin: 0; box-shadow: none; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        .vocab-item { display: flex; flex-direction: column; padding: 12px 10px; border-bottom: 1px solid #eee; }
+        .vocab-item:last-child { border-bottom: none; }
+        .vocab-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        /* Lệnh white-space: nowrap; được thêm vào đây để cấm xuống dòng */
+        .vocab-hanzi { font-size: 1.3rem; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        .vocab-pinyin { font-size: 0.95rem; color: #a4b0be; margin-left: 5px; display: block; }
+        .vocab-meaning { font-size: 0.95rem; }
+        .vocab-actions { display: flex; gap: 5px; }
+        .vocab-actions button { padding: 4px 8px; font-size: 0.8rem; margin: 0; width: auto; box-shadow: none; }
+        .btn-normal { background: #dfe4ea; color: #2f3542; }
+        .btn-easy { background: #2ed573; color: white; }
+        .btn-hard { background: #ffa502; color: white; }
+        .vocab-list-container { max-height: 400px; overflow-y: auto; border: 1px solid #e1e1e1; border-radius: var(--border-radius-s); padding: 5px; }
+        
+        .progress-container { width: 100%; background-color: #f1f2f6; border-radius: 10px; height: 8px; margin-top: 5px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.5s ease; }
+        .mastery-text { font-size: 0.75rem; color: #747d8c; text-align: right; display: block; margin-top: 2px; }
+
+        .test-item { margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1; border-radius: var(--border-radius-s); background: #fafafa; }
+        .test-question { font-weight: bold; margin-bottom: 10px; font-size: 1.05rem; }
+        .test-input { width: 100%; padding: 10px; border: 2px solid #ccc; border-radius: 6px; font-size: 1.1rem; }
+        .test-feedback { margin-top: 10px; font-size: 0.95rem; padding: 10px; border-radius: 6px; display: none; }
+        .fb-correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fb-incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        /* Giao diện Audio Player Mới */
+        .custom-audio-player { background: #00a651; color: white; padding: 10px 15px; border-radius: var(--border-radius-pill); display: flex; align-items: center; gap: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0, 166, 81, 0.3); }
+        .audio-ctrl-btn { background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 5px; margin: 0; box-shadow: none; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; }
+        .audio-ctrl-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); border-radius: 50%; box-shadow: none; }
+        .audio-slider-group { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; font-weight: 500; }
+        .audio-slider { -webkit-appearance: none; width: 70px; height: 4px; background: rgba(255,255,255,0.4); border-radius: 2px; outline: none; }
+        .audio-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 12px; height: 12px; border-radius: 50%; background: white; cursor: pointer; }
+        
+        .speaker-btn-small { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0; margin: 0; box-shadow: none; color: var(--primary-color); }
+        .speaker-btn-small:hover { transform: scale(1.1); background: none; box-shadow: none; }
+        
+        .story-section { margin-bottom: 20px; line-height: 1.8; }
+        .story-hanzi { font-size: 1.3rem; color: var(--text-main); }
+        .story-pinyin { font-size: 1.05rem; color: #57606f; font-style: italic; }
+        .story-vietnamese { font-size: 1.05rem; color: #2f3542; }
+        .story-divider { border: 0; height: 1px; background: linear-gradient(to right, transparent, #dcdde1, transparent); margin: 20px 0; }
+        .story-stats { font-size: 0.9rem; color: #747d8c; background: #f8f9fa; padding: 15px; border-radius: var(--border-radius-s); border: 1px solid #eeeeee; }
+        .story-stats b { color: #2f3542; }
+    </style>
+</head>
+<body>
+
+    <div id="overdueBanner">
+        <span style="font-weight: bold;"><span class="emoji">🚨</span> Nợ đọng: <span id="overdueCount">0</span> từ quá hạn!</span>
+        <button onclick="startOverdueTest()">Dọn Dẹp</button>
+    </div>
+
+    <h1><span class="emoji">🀄</span> Gia Sư Tiếng Trung AI</h1>
+    
+    <!-- 1. BÀI KHÓA HÔM NAY -->
+    <div class="card">
+        <h3><span class="emoji">🗣️</span> 1. Bài Khóa Hôm Nay</h3>
+        <p style="font-size: 0.9rem; margin-top: -10px;">Đọc văn bản tiếng Trung sinh ra TỪ CHÍNH các từ bạn đã học.</p>
+        <button class="secondary-btn" onclick="generateDailyContent()"><span class="emoji">🎲</span> Khám phá bài học</button>
+        <p id="dailyStatus" class="status-msg info"></p>
+        <div id="dailyContentArea" class="ai-box"></div>
+    </div>
+
+    <!-- 2. KIỂM TRA BÀI CŨ -->
+    <div class="card">
+        <h3><span class="emoji">📓</span> 2. Kiểm Tra Bài Cũ</h3>
+        <p id="dueCount" class="status-msg info">Đang rà soát trí nhớ...</p>
+        <button onclick="startTest('normal')" id="startBtn"><span class="emoji">🎯</span> Làm Bài Kiểm Tra</button>
+        
+        <div id="testArea">
+            <h3 id="testTitle">Dịch các câu/từ sau sang Tiếng Trung:</h3>
+            <div id="testQuestionsArea"></div>
+            
+            <div style="margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 15px;">
+                <p style="font-size: 0.85rem; color: #747d8c;">*Chữa cháy: Nếu AI chấm sót hoặc bạn bỏ trống, hãy gõ từ bạn quên vào đây.</p>
+                <textarea id="manualFeedback" rows="2" placeholder="Ví dụ: Tôi quên từ ngân hàng, quên số 6..."></textarea>
+            </div>
+            
+            <button onclick="submitTest()" id="submitTestBtn"><span class="emoji">✅</span> Nộp Bài & Chấm Điểm</button>
+            <button onclick="closeTest()" class="secondary-btn" style="display:none;" id="closeTestBtn">Đóng bài kiểm tra</button>
+            <p id="evalStatus" class="status-msg info"></p>
+        </div>
+    </div>
+
+    <!-- 3. TỪ VỰNG MỚI -->
+    <div class="card">
+        <h3><span class="emoji">🔤</span> 3. Từ Vựng Mới</h3>
+        <div class="fast-input-wrapper">
+            <input type="text" id="hanzi" placeholder="Nhập chữ Hán (VD: 你好, 老师)..." onkeypress="handleEnter(event)">
+            <span class="fast-hint">Nhấn Enter</span>
+        </div>
+        <button onclick="addWordsFast()"><span class="emoji">🚀</span> Xử Lý & Lưu</button>
+        <p id="addStatus" class="status-msg"></p>
+    </div>
+
+    <!-- 4. KHO TỪ VỰNG -->
+    <div class="card">
+        <h3><span class="emoji">📚</span> 4. Kho Từ Vựng (Mức độ nhớ)</h3>
+        <button class="secondary-btn" onclick="toggleVocab()"><span class="emoji">👁️</span> Mở danh sách</button>
+        <div id="vocabArea">
+            <div id="vocabList" class="vocab-list-container"></div>
+        </div>
+    </div>
+
+    <!-- 5 & 6. ĐỒNG BỘ VÀ CÀI ĐẶT -->
+    <div class="grid-2">
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem;"><span class="emoji">🔄</span> Đồng bộ</h3>
+            <textarea id="backupData" rows="2" placeholder="Mã dữ liệu..."></textarea>
+            <button class="secondary-btn" onclick="exportData()" style="padding: 10px; font-size: 0.9rem;">Xuất mã</button>
+            <button class="secondary-btn" onclick="importData()" style="padding: 10px; font-size: 0.9rem;">Nhập mã</button>
+        </div>
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem;"><span class="emoji">🔑</span> Cài đặt AI</h3>
+            <input type="password" id="apiKey" placeholder="Dán API Key..." oninput="saveApiKey()">
+            <p id="keyStatus" class="status-msg success" style="font-size: 0.8rem;"></p>
+        </div>
+    </div>
+
+    <script>
+        const AI_MODEL = "gemini-2.5-flash"; 
+        let vocab = [];
+        let currentTestWords = [];
+        let testDataCache = []; 
+        let isTestingOverdue = false;
+        
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        
+        window.onload = function() {
+            let savedKey = localStorage.getItem('gemini_api_key_v4');
+            if (savedKey) { document.getElementById('apiKey').value = savedKey; document.getElementById('keyStatus').innerText = "✓ Đã lưu Key."; }
+            let savedVocab = localStorage.getItem('vocab_db_v4');
+            if (savedVocab) {
+                vocab = JSON.parse(savedVocab);
+                vocab.forEach(v => { if(!v.difficulty) v.difficulty = 'normal'; });
+            }
+            updateDashboard();
+        };
+
+        function saveApiKey() { localStorage.setItem('gemini_api_key_v4', document.getElementById('apiKey').value.trim()); }
+        function saveDb() { localStorage.setItem('vocab_db_v4', JSON.stringify(vocab)); updateDashboard(); renderVocabList(); }
+        
+        function getDueWords() { let today = new Date().toISOString().split('T')[0]; return vocab.filter(w => w.nextReview <= today); }
+        function getOverdueWords() { let d = new Date(); d.setDate(d.getDate() - 3); return vocab.filter(w => w.nextReview <= d.toISOString().split('T')[0]); }
+
+        function updateDashboard() {
+            let due = getDueWords();
+            document.getElementById('dueCount').innerHTML = `Hôm nay cần ôn: <b>${due.length}</b> từ. (Tổng: ${vocab.length})`;
+            let overdue = getOverdueWords();
+            let banner = document.getElementById('overdueBanner');
+            if(overdue.length > 0) { document.getElementById('overdueCount').innerText = overdue.length; banner.style.display = 'flex'; } 
+            else { banner.style.display = 'none'; }
+        }
+
+        // --- HỆ THỐNG AUDIO ---
+        function playPauseStory() {
+            let playBtn = document.getElementById('playPauseIcon');
+            let text = document.getElementById('pureHanziText').innerText;
+            
+            if (synth.speaking) {
+                if (synth.paused) {
+                    synth.resume();
+                    playBtn.innerText = '⏸️'; 
+                } else {
+                    synth.pause();
+                    playBtn.innerText = '▶️'; 
+                }
+            } else {
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = 'zh-CN';
+                currentUtterance.rate = document.getElementById('audioSpeed').value;
+                currentUtterance.volume = document.getElementById('audioVolume').value;
+                
+                currentUtterance.onend = function() {
+                    playBtn.innerText = '▶️';
+                };
+                
+                synth.speak(currentUtterance);
+                playBtn.innerText = '⏸️';
+            }
+        }
+
+        function stopStory() {
+            synth.cancel();
+            document.getElementById('playPauseIcon').innerText = '▶️';
+        }
+
+        function updateAudioSettings() {
+            if (synth.speaking && !synth.paused) {
+                stopStory();
+                playPauseStory();
+            }
+        }
+
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                synth.cancel(); 
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN'; 
+                synth.speak(utterance);
+            }
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') addWordsFast(); }
+
+        async function addWordsFast() {
+            let hInput = document.getElementById('hanzi').value.trim();
+            let key = document.getElementById('apiKey').value.trim();
+            let status = document.getElementById('addStatus');
+            if (!hInput || !key) return status.innerText = "❌ Thiếu chữ Hán hoặc API Key!";
+            status.className = "status-msg info"; status.innerText = "⏳ Đang phân tích từ mới...";
+            
+            let prompt = `Phân tích: "${hInput}". Trả về MỘT mảng JSON: [{"hanzi": "你好", "pinyin": "nǐ hǎo", "meaning": "Xin chào"}]`;
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json(); if(data.error) throw new Error(data.error.message);
+                let cleanJson = data.candidates[0].content.parts[0].text.substring(data.candidates[0].content.parts[0].text.indexOf('['), data.candidates[0].content.parts[0].text.lastIndexOf(']') + 1);
+                let results = JSON.parse(cleanJson);
+                
+                let today = new Date().toISOString().split('T')[0];
+                let added = 0;
+                results.forEach(item => {
+                    if(!vocab.some(v => v.hanzi === item.hanzi)) {
+                        vocab.push({ hanzi: item.hanzi, pinyin: item.pinyin, meaning: item.meaning, nextReview: today, interval: 1, ease: 2.5, difficulty: 'normal' });
+                        added++;
+                    }
+                });
+                saveDb(); document.getElementById('hanzi').value = ''; 
+                status.className = "status-msg success"; status.innerText = `✅ Đã lưu ${added} từ.`;
+            } catch (e) { status.className = "status-msg error"; status.innerText = `❌ Lỗi: ${e.message}`; }
+        }
+
+        function toggleVocab() { let area = document.getElementById('vocabArea'); area.style.display = area.style.display === 'block' ? 'none' : 'block'; renderVocabList(); }
+        function setDifficulty(hanzi, diff) { let idx = vocab.findIndex(v => v.hanzi === hanzi); if (idx > -1) { vocab[idx].difficulty = diff; saveDb(); } }
+
+        function renderVocabList() {
+            let listDiv = document.getElementById('vocabList'); listDiv.innerHTML = '';
+            let sortedVocab = [...vocab].reverse(); 
+            if(sortedVocab.length === 0) return listDiv.innerHTML = '<p style="text-align:center;">Kho từ vựng trống.</p>';
+
+            sortedVocab.forEach(v => {
+                let diff = v.difficulty || 'normal';
+                let bN = diff === 'normal' ? `<button class="btn-normal" style="border: 2px solid #555;">⚪ Bình thường</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'normal')">⚪</button>`;
+                let bE = diff === 'easy' ? `<button class="btn-easy" style="border: 2px solid #228b22;">🟢 Dễ</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'easy')">🟢</button>`;
+                let bH = diff === 'hard' ? `<button class="btn-hard" style="border: 2px solid #b33939;">🔥 Khó</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'hard')">🔥</button>`;
+
+                let masteryPercent = Math.min(100, Math.round((v.interval / 21) * 100));
+                let color = masteryPercent < 30 ? '#ff4757' : (masteryPercent < 70 ? '#ffa502' : '#2ed573');
+
+                listDiv.innerHTML += `
+                    <div class="vocab-item">
+                        <div class="vocab-top">
+                            <div class="vocab-info">
+                                <span class="vocab-hanzi">${v.hanzi} <button class="speaker-btn-small" onclick="speakWord('${v.hanzi}')">🔊</button></span>
+                                <span class="vocab-pinyin">(${v.pinyin})</span>
+                                <span class="vocab-meaning">${v.meaning}</span>
+                            </div>
+                            <div class="vocab-actions">${bH} ${bN} ${bE}</div>
+                        </div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${masteryPercent}%; background-color: ${color};"></div></div>
+                        <span class="mastery-text">Độ ghi nhớ: ${masteryPercent}% (Ôn sau ${v.interval} ngày)</span>
+                    </div>`;
+            });
+        }
+
+        function startOverdueTest() { startTest('overdue'); }
+
+        async function startTest(mode) {
+            let key = document.getElementById('apiKey').value.trim();
+            if (!key) return alert("Chưa dán API Key!");
+
+            currentTestWords = (mode === 'overdue' ? getOverdueWords() : getDueWords()).slice(0, 15);
+            isTestingOverdue = (mode === 'overdue');
+            
+            if (currentTestWords.length === 0) return alert("🎉 Tuyệt vời! Bạn không nợ bài nào.");
+            
+            document.getElementById('testArea').style.display = 'block';
+            document.getElementById('testQuestionsArea').innerHTML = "<p>⏳ AI đang tư duy và tự động điều chỉnh độ khó đề bài...</p>";
+            document.getElementById('submitTestBtn').style.display = 'block';
+            document.getElementById('closeTestBtn').style.display = 'none';
+            document.getElementById('evalStatus').innerText = "";
+            document.getElementById('manualFeedback').value = "";
+            
+            let allWords = vocab.map(w => w.hanzi).join(", ");
+            let testWordsInfo = currentTestWords.map(w => `${w.hanzi} (${w.meaning})`).join(" | ");
+            
+            let prompt = `Bạn là chuyên gia kiểm tra tiếng Trung theo phương pháp Tự Thích Ứng.
+KHO TỪ VỰNG TỔNG: [${allWords}]
+TỪ VỰNG BẮT BUỘC KIỂM TRA: [${testWordsInfo}]
+
+YÊU CẦU:
+1. ƯU TIÊN 1: Ghép các từ trong kho thành CÂU HOÀN CHỈNH, LOGIC. KHÔNG dùng từ ngoài kho.
+2. ƯU TIÊN 2 (FALLBACK): Nếu các từ bắt buộc không thể ghép logic, HÃY TÁCH CHÚNG RA, lấy nghĩa tiếng Việt làm câu hỏi từ lẻ.
+3. Trả về mảng JSON chuẩn xác:
+[
+  {
+    "question_vn": "Câu tiếng Việt tự nhiên HOẶC Nghĩa tiếng Việt của từ lẻ",
+    "target_hanzi_words": ["các", "từ", "Hán", "đáp", "án"]
+  }
+]`;
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json(); if(data.error) throw new Error(data.error.message);
+                
+                let rawText = data.candidates[0].content.parts[0].text;
+                let cleanJson = rawText.substring(rawText.indexOf('['), rawText.lastIndexOf(']') + 1);
+                testDataCache = JSON.parse(cleanJson);
+                
+                let html = "";
+                testDataCache.forEach((item, index) => {
+                    html += `
+                        <div class="test-item" id="test-item-${index}">
+                            <div class="test-question">${index + 1}. ${item.question_vn}</div>
+                            <input type="text" class="test-input" id="answer-${index}" placeholder="Nhập chữ Hán hoặc Pinyin...">
+                            <div class="test-feedback" id="feedback-${index}"></div>
+                        </div>`;
+                });
+                document.getElementById('testQuestionsArea').innerHTML = html;
+            } catch (e) { document.getElementById('testQuestionsArea').innerHTML = `❌ Lỗi xử lý đề: ${e.message}`; }
+        }
+
+        async function submitTest() {
+            let key = document.getElementById('apiKey').value.trim();
+            document.getElementById('evalStatus').innerText = "⏳ AI đang chấm bài và tính điểm...";
+            document.getElementById('submitTestBtn').style.display = 'none';
+
+            let studentAnswers = testDataCache.map((item, index) => {
+                return { question: item.question_vn, expected_words: item.target_hanzi_words, student_answer: document.getElementById(`answer-${index}`).value.trim() };
+            });
+
+            let prompt = `Chấm thi tiếng Trung. Bài làm: ${JSON.stringify(studentAnswers, null, 2)}
+Trả về mảng JSON:
+[
+  {
+    "is_correct": true/false,
+    "feedback": "Nhận xét",
+    "failed_words": ["chữ Hán sai/quên"]
+  }
+]`;
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json(); if(data.error) throw new Error(data.error.message);
+                
+                let rawText = data.candidates[0].content.parts[0].text;
+                let cleanJson = rawText.substring(rawText.indexOf('['), rawText.lastIndexOf(']') + 1);
+                let gradingResult = JSON.parse(cleanJson);
+                let totalFailedWords = [];
+
+                gradingResult.forEach((res, idx) => {
+                    let fbDiv = document.getElementById(`feedback-${idx}`);
+                    fbDiv.style.display = 'block'; fbDiv.innerText = res.feedback;
+                    fbDiv.className = res.is_correct ? "test-feedback fb-correct" : "test-feedback fb-incorrect";
+                    if(res.failed_words) totalFailedWords.push(...res.failed_words);
+                });
+
+                let manualText = document.getElementById('manualFeedback').value;
+                if (manualText) {
+                    let p2 = `Trích xuất chữ Hán bị quên từ: "${manualText}". Danh sách từ gốc: ${currentTestWords.map(w=>w.hanzi).join(',')}. Trả về JSON VD: ["你好"].`;
+                    let r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: p2 }] }] }) });
+                    let d2 = await r2.json(); let c2 = d2.candidates[0].content.parts[0].text;
+                    let manualFailed = JSON.parse(c2.substring(c2.indexOf('['), c2.lastIndexOf(']') + 1));
+                    totalFailedWords.push(...manualFailed);
+                }
+
+                currentTestWords.forEach(w => {
+                    let isRemembered = !totalFailedWords.includes(w.hanzi);
+                    let idx = vocab.findIndex(v => v.hanzi === w.hanzi);
+                    if (idx > -1) {
+                        let diff = vocab[idx].difficulty || 'normal';
+                        if (isRemembered) {
+                            let newInterval = vocab[idx].interval * vocab[idx].ease;
+                            if (diff === 'easy') newInterval *= 2.0; if (diff === 'hard') newInterval *= 0.6; 
+                            vocab[idx].interval = Math.max(1, Math.floor(newInterval));
+                            vocab[idx].ease += 0.1;
+                        } else {
+                            vocab[idx].interval = 1; vocab[idx].ease = Math.max(1.3, vocab[idx].ease - 0.2);
+                        }
+                        let nextDate = new Date(); nextDate.setDate(nextDate.getDate() + vocab[idx].interval);
+                        vocab[idx].nextReview = nextDate.toISOString().split('T')[0];
+                    }
+                });
+                
+                saveDb(); document.getElementById('evalStatus').innerText = "✅ Đã cập nhật độ ghi nhớ!"; document.getElementById('closeTestBtn').style.display = 'block';
+            } catch (e) { document.getElementById('evalStatus').innerText = `❌ Lỗi chấm điểm: ${e.message}`; document.getElementById('submitTestBtn').style.display = 'block'; }
+        }
+
+        function closeTest() {
+            document.getElementById('testArea').style.display = 'none';
+            if(isTestingOverdue && getOverdueWords().length > 0) { if(confirm("Còn từ nợ đọng. Làm tiếp 1 đợt nữa nhé?")) startOverdueTest(); } 
+            else if (!isTestingOverdue && getDueWords().length > 0) { if(confirm("Vẫn còn từ cần ôn hôm nay. Làm tiếp nhé?")) startTest('normal'); }
+        }
+
+        // --- BÀI KHÓA HÔM NAY ---
+        async function generateDailyContent() {
+            let area = document.getElementById('dailyContentArea');
+            let status = document.getElementById('dailyStatus');
+            let key = document.getElementById('apiKey').value.trim();
+            if (!key) return alert("Chưa dán API Key!");
+            if (vocab.length < 5) return alert("Cần ít nhất 5 từ để AI viết bài.");
+
+            status.innerText = "⏳ AI đang phân tích logic từ vựng..."; area.style.display = 'block'; area.innerHTML = "";
+            synth.cancel(); 
+            
+            let wordPool = vocab.map(v => v.hanzi).join(", ");
+
+            let prompt = `Bạn là giáo viên tiếng Trung. Kho từ vựng của học sinh CHỈ CÓ: [${wordPool}].
+YÊU CẦU:
+1. Ghép tối đa các chữ Hán trong kho thành một đoạn văn/hội thoại CÓ NGHĨA LOGIC. TUYỆT ĐỐI KHÔNG dùng chữ ngoài kho.
+2. Từ nào khó ghép thì bỏ ra. KHÔNG GIẢI THÍCH.
+3. CHỈ TRẢ VỀ JSON SAU:
+{
+  "hanzi": "Đoạn văn tiếng Trung viết liền mạch.",
+  "pinyin": "Pinyin của đoạn văn trên.",
+  "vietnamese": "Bản dịch tiếng Việt mượt mà.",
+  "used_words": "Từ, Đã, Dùng",
+  "unused_reason": "Các từ CHƯA sử dụng: ... (Lý do: ...)"
+}`;
+
+            try {
+                let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${AI_MODEL}:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                let data = await response.json(); if(data.error) throw new Error(data.error.message);
+                
+                let rawText = data.candidates[0].content.parts[0].text;
+                let cleanJson = rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1);
+                let storyData = JSON.parse(cleanJson);
+                
+                let htmlContent = `
+                    <div class="custom-audio-player">
+                        <button class="audio-ctrl-btn" id="playPauseIcon" onclick="playPauseStory()">▶️</button>
+                        <button class="audio-ctrl-btn" onclick="stopStory()">⏹️</button>
+                        
+                        <div class="audio-slider-group" style="margin-left: auto;">
+                            <span>Tốc độ:</span>
+                            <input type="range" class="audio-slider" id="audioSpeed" min="0.5" max="1.5" step="0.1" value="1" onchange="updateAudioSettings()">
+                        </div>
+                        
+                        <div class="audio-slider-group" style="margin-left: 10px;">
+                            <span>Âm lượng:</span>
+                            <input type="range" class="audio-slider" id="audioVolume" min="0" max="1" step="0.1" value="1" onchange="updateAudioSettings()">
+                        </div>
+                    </div>
+                    
+                    <div class="story-hanzi" id="pureHanziText">${storyData.hanzi}</div>
+                    <hr class="story-divider">
+                    <div class="story-section story-pinyin">${storyData.pinyin}</div>
+                    <hr class="story-divider">
+                    <div class="story-section story-vietnamese">${storyData.vietnamese}</div>
+                    <hr class="story-divider">
+                    <div class="story-stats">
+                        <p><b>Đã sử dụng:</b> ${storyData.used_words}</p>
+                        <p style="margin-bottom:0;"><b>Chưa sử dụng:</b> ${storyData.unused_reason}</p>
+                    </div>
+                `;
+
+                localStorage.setItem('daily_content_v4', htmlContent);
+                localStorage.setItem('daily_date_v4', new Date().toISOString().split('T')[0]);
+                
+                area.innerHTML = htmlContent;
+                status.innerText = "";
+            } catch (e) { status.innerText = `❌ Lỗi xử lý giao diện: ${e.message}`; }
+        }
+
+        function exportData() { document.getElementById('backupData').value = JSON.stringify(vocab); }
+        function importData() { try { vocab = JSON.parse(document.getElementById('backupData').value); saveDb(); alert("Xong!"); } catch { alert("Lỗi mã!"); } }
+    </script>
+</body>
+</html>
