@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia Sư Tiếng Trung AI & SRS - Premium V5.14 Pro</title>
+    <style>
+        :root { --primary-color: #ff4757; --primary-hover: #e84118; --bg-color: #f1f2f6; --card-bg: #ffffff; --text-main: #2f3542; --text-sub: #747d8c; --border-radius-s: 8px; --border-radius-m: 15px; --border-radius-pill: 50px; --shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); max-width: 900px; margin: auto; padding: 40px 20px; line-height: 1.6; }
+        h1, h2, h3 { color: var(--text-main); font-weight: 800; margin-top: 0; }
+        h1 { text-align: center; font-size: 2.2rem; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        h1 .emoji { font-size: 2.5rem; }
+        h3 { font-size: 1.3rem; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--primary-color); }
+        p { color: var(--text-sub); margin: 0 0 10px 0; }
+        .card { background-color: var(--card-bg); padding: 30px; border-radius: var(--border-radius-m); margin-bottom: 25px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 15px; margin-bottom: 15px; border: 2px solid #e1e1e1; border-radius: var(--border-radius-s); font-size: 1rem; color: var(--text-main); }
+        input:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1); }
+        textarea { resize: vertical; min-height: 80px; }
+        button { background: var(--primary-color); color: white; padding: 15px 20px; border: none; border-radius: var(--border-radius-pill); cursor: pointer; width: 100%; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2); margin-bottom: 10px; transition: transform 0.1s; }
+        button:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 7px 14px rgba(255, 71, 87, 0.3); }
+        button:active { transform: translateY(0); }
+        button:disabled { background: #cbd5e1 !important; color: #64748b !important; cursor: not-allowed !important; transform: none !important; box-shadow: none !important; }
+        button.secondary-btn { background: #747d8c; box-shadow: 0 4px 6px rgba(116, 125, 140, 0.2); }
+        button.secondary-btn:hover { background: #2f3542; box-shadow: 0 7px 14px rgba(47, 53, 66, 0.3); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        #testArea, #backupArea, #vocabArea, #dailyContentArea { display: none; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #e1e1e1; }
+        
+        .ai-box { background: #fffafa; padding: 25px; border-radius: var(--border-radius-s); border-left: 5px solid var(--primary-color); margin-bottom: 20px; font-size: 1.1rem; color: var(--text-main); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+        .status-msg { font-weight: bold; text-align: center; margin-top: 10px; }
+        .success { color: #2ed573; }
+        .info { color: var(--primary-color); }
+        .error { color: #ff4757; }
+        .fast-input-wrapper { position: relative; }
+        .fast-hint { font-size: 0.85rem; color: #a4b0be; position: absolute; right: 15px; top: 18px; pointer-events: none; }
+        
+        #overdueBanner { background: #ff4757; color: white; padding: 15px 20px; border-radius: var(--border-radius-m); margin-bottom: 25px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4); animation: pulse 2s infinite; }
+        #overdueBanner button { background: white; color: #ff4757; padding: 8px 15px; width: auto; margin: 0; box-shadow: none; font-size: 1rem; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+
+        /* UI Kho Từ Vựng */
+        .vocab-item { display: flex; flex-direction: column; padding: 20px 15px; border-bottom: 1px solid #e1e1e1; }
+        .vocab-item:last-child { border-bottom: none; }
+        .vocab-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 15px; }
+        
+        .vocab-info-wrapper { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .vocab-hanzi { font-size: 2.2rem; font-weight: bold; color: var(--primary-color); display: flex; align-items: center; gap: 8px; white-space: nowrap; line-height: 1.2; }
+        .vocab-hanviet { font-size: 1.4rem; color: #000000; font-weight: 800; white-space: nowrap; }
+        .vocab-pinyin { font-size: 1.3rem; color: #a4b0be; margin-top: 5px; display: block; font-weight: 500; }
+        
+        .vocab-meaning { font-size: 1.25rem; line-height: 1.7; margin-top: 12px; color: #2f3542; }
+        .meaning-line { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+        
+        .pos-badge { background: #2f3542; color: #ffffff; padding: 4px 10px; border-radius: 6px; font-size: 1rem; font-weight: bold; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        .vocab-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .vocab-actions button { padding: 6px 12px; font-size: 1rem; margin: 0; width: auto; box-shadow: none; border-radius: 6px; }
+        .btn-normal { background: #dfe4ea; color: #2f3542; }
+        .btn-easy { background: #2ed573; color: white; }
+        .btn-hard { background: #ffa502; color: white; }
+        
+        .vocab-list-container { max-height: 600px; overflow-y: auto; border: 2px solid #e1e1e1; border-radius: var(--border-radius-s); padding: 5px; background: #fafafa; }
+        
+        .progress-container { width: 100%; background-color: #e1e1e1; border-radius: 10px; height: 8px; margin-top: 15px; overflow: hidden; }
+        .progress-bar { height: 100%; transition: width 0.5s ease; }
+        .mastery-text { font-size: 0.9rem; color: #747d8c; text-align: right; display: block; margin-top: 5px; font-weight: 500; }
+
+        /* MÀN HÌNH CHỜ & BÁO LỖI NỘI SOI */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(5px); flex-direction: column; text-align: center; padding: 20px;}
+        .hourglass { font-size: 4rem; margin-bottom: 20px; display: inline-block; animation: flipHourglass 1.5s infinite ease-in-out; }
+        @keyframes flipHourglass { 0% { transform: rotate(0deg); } 100% { transform: rotate(180deg); } }
+        .loading-text { font-size: 1.5rem; font-weight: bold; color: var(--text-main); margin-bottom: 10px;}
+        .loading-subtext { font-size: 1.1rem; color: var(--text-sub); max-width: 600px; width: 100%; line-height: 1.5;}
+        .timer-badge { display: inline-block; margin-top: 15px; padding: 5px 15px; background: #2f3542; color: white; border-radius: 20px; font-family: monospace; font-size: 1.1rem; font-weight: bold;}
+        
+        .modal-content { background: white; padding: 30px; border-radius: var(--border-radius-m); width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: left; }
+        .modal-content label { font-weight: bold; display: block; margin-bottom: 5px; color: var(--text-main); }
+        .modal-content textarea { font-family: inherit; font-size: 1.1rem; line-height: 1.5; }
+
+        .test-item { margin-bottom: 20px; padding: 15px; border: 1px solid #e1e1e1; border-radius: var(--border-radius-s); background: #fafafa; }
+        .test-question { font-weight: bold; margin-bottom: 10px; font-size: 1.1rem; }
+        .test-input { width: 100%; padding: 12px; border: 2px solid #ccc; border-radius: 6px; font-size: 1.2rem; }
+        .test-feedback { margin-top: 10px; font-size: 1.05rem; padding: 12px; border-radius: 6px; display: none; }
+        .fb-correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fb-incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .srs-word-check { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: white; border: 1px solid #e1e1e1; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
+        .srs-word-check:hover { background: #f1f2f6; }
+        .srs-word-check.checked { border-color: #2ed573; background: #e8f8f0; }
+        .srs-word-check.unchecked { border-color: #ff4757; background: #ffebee; }
+        .srs-text { font-size: 1.2rem; font-weight: bold; }
+        
+        /* Chỉnh CSS cho bài đọc để hỗ trợ ngắt dòng */
+        .story-section { margin-bottom: 20px; line-height: 1.8; white-space: pre-wrap; }
+        .story-hanzi { font-size: 1.5rem; color: var(--text-main); white-space: pre-wrap; line-height: 1.8; }
+        .story-pinyin { font-size: 1.2rem; color: #57606f; font-style: italic; white-space: pre-wrap; }
+        .story-vietnamese { font-size: 1.2rem; color: #2f3542; white-space: pre-wrap; }
+        .story-divider { border: 0; height: 1px; background: linear-gradient(to right, transparent, #dcdde1, transparent); margin: 20px 0; }
+
+        /* UI QUẢN LÝ HẠM ĐỘI KEY */
+        .key-row { display:flex; justify-content:space-between; align-items:center; padding:10px 15px; background:#f8f9fa; border:1px solid #e1e1e1; border-radius:8px; margin-bottom:10px; }
+        .key-mask { font-family:monospace; color:#2f3542; font-size:1.05rem; }
+        .key-status-badge { font-weight:bold; font-size:0.9rem; padding:4px 10px; border-radius:20px; }
+        .badge-ready { background:#e8f8f0; color:#2ed573; border: 1px solid #2ed573;}
+        .badge-cooldown { background:#ffebee; color:#ff4757; border: 1px solid #ff4757; animation: pulse 1s infinite;}
+    </style>
+</head>
+<body>
+
+    <div id="globalLoading" class="modal-overlay">
+        <div class="hourglass" id="glIcon">⏳</div>
+        <div class="loading-text" id="glTitle">Đang xử lý...</div>
+        <div class="loading-subtext" id="glSubtitle">Hệ thống đang hoạt động, vui lòng chờ giây lát.</div>
+        <div class="timer-badge" id="glTimer" style="display:none;">⏱️ 0s / 45s</div>
+        <button id="glCloseBtn" onclick="hideLoading()" style="display:none; margin-top: 20px; background: #ff4757; width: auto; font-size: 1rem;">Đóng thông báo</button>
+    </div>
+
+    <div id="editModal" class="modal-overlay" style="background: rgba(0,0,0,0.6); backdrop-filter: none; flex-direction: row;">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:var(--primary-color);"><span class="emoji">✏️</span> Chỉnh sửa toàn diện</h3>
+            <input type="hidden" id="editOriginalHanzi">
+            <label>Chữ Hán:</label>
+            <input type="text" id="editHanzi">
+            <label>Âm Hán Việt (Trong ngoặc vuông [...]):</label>
+            <input type="text" id="editHanviet" placeholder="VD: Nễ hảo">
+            <label>Pinyin:</label>
+            <input type="text" id="editPinyin">
+            <label>Nghĩa & Từ loại (Mỗi nghĩa 1 dòng, bắt đầu bằng [Từ loại]):</label>
+            <textarea id="editMeaning" rows="6" placeholder="[Động từ] Nghĩa 1...&#10;[Danh từ] Nghĩa 2..."></textarea>
+            <div class="grid-2">
+                <button class="secondary-btn" onclick="closeEditModal()">Hủy bỏ</button>
+                <button onclick="saveEditVocab()">💾 Lưu Thay Đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overdueBanner">
+        <span style="font-weight: bold;"><span class="emoji">🚨</span> Nợ đọng: <span id="overdueCount">0</span> từ quá hạn!</span>
+        <button id="btnDonDep" onclick="startOverdueTest()">Dọn Dẹp</button>
+    </div>
+
+    <h1><span class="emoji">🀄</span> Gia Sư Tiếng Trung AI</h1>
+    
+    <div class="card">
+        <h3><span class="emoji">🗣️</span> 1. Bài Khóa Hôm Nay</h3>
+        <p style="font-size: 0.9rem; margin-top: -10px;">Thưởng thức tiếng Trung qua các mẩu chuyện, nhật ký, bản tin tự nhiên 100%.</p>
+        <button class="secondary-btn" onclick="generateDailyContent()"><span class="emoji">📰</span> Khám phá bài đọc</button>
+        <div id="dailyContentArea" class="ai-box"></div>
+    </div>
+
+    <div class="card" id="cardTestArea">
+        <h3><span class="emoji">📓</span> 2. Kiểm Tra Bài Cũ</h3>
+        <p id="dueCount" class="status-msg info">Đang rà soát trí nhớ...</p>
+        <button onclick="startTest('normal')" id="startBtn"><span class="emoji">🎯</span> Làm Bài Kiểm Tra</button>
+        
+        <div id="testArea">
+            <h3 id="testTitle">Dịch các câu/từ sau sang Tiếng Trung:</h3>
+            <div id="testQuestionsArea"></div>
+            
+            <div style="margin-top: 20px; border-top: 2px dashed #ccc; padding-top: 15px;">
+                <p style="font-size: 0.85rem; color: #747d8c;">*Chữa cháy: Nếu AI chấm sót hoặc bạn bỏ trống, hãy gõ từ bạn quên vào đây.</p>
+                <textarea id="manualFeedback" rows="2" placeholder="Ví dụ: Tôi quên từ ngân hàng, quên số 6..."></textarea>
+            </div>
+            
+            <button onclick="submitTest()" id="submitTestBtn"><span class="emoji">✅</span> Nộp Bài & Chấm Điểm</button>
+            
+            <p id="evalStatus" class="status-msg info"></p>
+
+            <div id="srsConfirmationBlock" style="display:none; margin-top:25px; padding:20px; background:#f8f9fa; border:2px solid #e1e1e1; border-radius:10px;">
+                <h4 style="margin-top:0; color:#2f3542;"><span class="emoji">🧠</span> Kiểm duyệt Trí nhớ (SRS)</h4>
+                <p style="font-size:0.95rem; color:#747d8c;">Hệ thống đã tự động tìm ra các từ lọt lưới. Từ nào chưa thuộc được đánh dấu đỏ ❌. Bạn có thể bấm để điều chỉnh thủ công nếu muốn.</p>
+                <div id="srsChecklist"></div>
+                <button onclick="finalizeSRS()" style="margin-top:15px; background:#2ed573;"><span class="emoji">💾</span> Chốt & Lưu Điểm Số</button>
+            </div>
+            
+            <button onclick="closeTest()" class="secondary-btn" style="display:none; margin-top:15px;" id="closeTestBtn">Đóng bài kiểm tra</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">🔤</span> 3. Từ Vựng Mới</h3>
+        <div class="fast-input-wrapper">
+            <input type="text" id="hanzi" placeholder="Nhập chữ Hán (Cách nhau bằng dấu phẩy VD: 买,卖,苹果)..." onkeypress="handleEnter(event)">
+            <span class="fast-hint">Nhấn Enter</span>
+        </div>
+        <button onclick="addWordsFast()"><span class="emoji">🚀</span> Xử Lý & Lưu</button>
+        <p id="addStatus" class="status-msg"></p>
+    </div>
+
+    <div class="card">
+        <h3><span class="emoji">📚</span> 4. Kho Từ Vựng (Mức độ nhớ)</h3>
+        <button class="secondary-btn" onclick="toggleVocab()"><span class="emoji">👁️</span> Mở danh sách</button>
+        <div id="vocabArea">
+            <input type="text" id="searchVocab" placeholder="🔍 Tìm kiếm Tiếng Việt, Pinyin, Hán Việt..." oninput="renderVocabList()" style="margin-bottom: 15px; padding: 12px; font-size:1.1rem;">
+            <div id="vocabList" class="vocab-list-container"></div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem;"><span class="emoji">🔄</span> Đồng bộ</h3>
+            <textarea id="backupData" rows="2" placeholder="Mã dữ liệu..."></textarea>
+            <button class="secondary-btn" onclick="exportData()" style="padding: 10px; font-size: 0.9rem;">Xuất mã</button>
+            <button class="secondary-btn" onclick="importData()" style="padding: 10px; font-size: 0.9rem;">Nhập mã</button>
+        </div>
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="font-size: 1.1rem;"><span class="emoji">🔑</span> Hạm đội API Key</h3>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="password" id="newApiKey" placeholder="Dán API Key..." style="margin-bottom:0;">
+                <button onclick="addNewKey()" style="width:auto; margin-bottom:0; padding:10px 15px;">➕ Thêm</button>
+            </div>
+            
+            <div id="keyList" style="display:flex; flex-direction:column;"></div>
+            <p id="keyStatus" class="status-msg" style="font-size: 0.85rem; margin-top:5px;"></p>
+            
+            <button onclick="upgradeOldVocab()" class="secondary-btn" style="padding: 10px; font-size: 0.9rem; background: #e1b12c; color:#fff; margin-top: 15px;"><span class="emoji">✨</span> Chuẩn hóa Dữ liệu cũ</button>
+        </div>
+    </div>
+
+    <script>
+        let vocab = [];
+        let currentTestWords = [];
+        let testDataCache = []; 
+        let isTestingOverdue = false;
+        let globalTimerInterval = null;
+
+        const MINI_DICT = {
+            "身体": { hanviet: "thân thể", pinyin: "shēntǐ", meaning: "[Danh từ] Cơ thể\n[Danh từ] Sức khỏe" },
+            "银行": { hanviet: "ngân hàng", pinyin: "yínháng", meaning: "[Danh từ] Ngân hàng" },
+            "去": { hanviet: "khứ", pinyin: "qù", meaning: "[Động từ] Đi" },
+            "我": { hanviet: "ngã", pinyin: "wǒ", meaning: "[Đại từ] Tôi, tao, tớ" },
+            "你": { hanviet: "nhĩ", pinyin: "nǐ", meaning: "[Đại từ] Bạn, cậu, mày" },
+            "他": { hanviet: "tha", pinyin: "tā", meaning: "[Đại từ] Anh ấy, ông ấy" },
+            "她": { hanviet: "tha", pinyin: "tā", meaning: "[Đại từ] Cô ấy, bà ấy" },
+            "好": { hanviet: "hảo", pinyin: "hǎo", meaning: "[Tính từ] Tốt, đẹp, hay\n[Phó từ] Rất" },
+            "学习": { hanviet: "học tập", pinyin: "xuéxí", meaning: "[Động từ] Học tập, học" },
+            "汉语": { hanviet: "hán ngữ", pinyin: "hányǔ", meaning: "[Danh từ] Tiếng Trung" },
+            "英语": { hanviet: "anh ngữ", pinyin: "yīngyǔ", meaning: "[Danh từ] Tiếng Anh" },
+            "谢谢": { hanviet: "tạ tạ", pinyin: "xièxie", meaning: "[Động từ] Cảm ơn" },
+            "再见": { hanviet: "tái kiến", pinyin: "zàijiàn", meaning: "[Động từ] Chào tạm biệt" },
+            "钱": { hanviet: "tiền", pinyin: "qián", meaning: "[Danh từ] Tiền, tiền bạc" },
+            "取": { hanviet: "thủ", pinyin: "qǔ", meaning: "[Động từ] Lấy, rút (tiền)" },
+            "爸爸": { hanviet: "ba ba", pinyin: "bàba", meaning: "[Danh từ] Bố, cha" },
+            "妈妈": { hanviet: "ma ma", pinyin: "māma", meaning: "[Danh từ] Mẹ" },
+            "哥哥": { hanviet: "ca ca", pinyin: "gēge", meaning: "[Danh từ] Anh trai" },
+            "姐姐": { hanviet: "tỷ tỷ", pinyin: "jiějie", meaning: "[Danh từ] Chị gái" },
+            "弟弟": { hanviet: "đệ đệ", pinyin: "dìdi", meaning: "[Danh từ] Em trai" },
+            "妹妹": { hanviet: "muội muội", pinyin: "mèimei", meaning: "[Danh từ] Em gái" },
+            "昨天": { hanviet: "tạc thiên", pinyin: "zuótiān", meaning: "[Danh từ] Hôm qua" },
+            "今天": { hanviet: "kim thiên", pinyin: "jīntiān", meaning: "[Danh từ] Hôm nay" },
+            "明天": { hanviet: "minh thiên", pinyin: "míngtiān", meaning: "[Danh từ] Ngày mai" },
+            "星期": { hanviet: "tinh kỳ", pinyin: "xīngqī", meaning: "[Danh từ] Tuần, thứ" },
+            "邮局": { hanviet: "bưu cục", pinyin: "yóujú", meaning: "[Danh từ] Bưu điện" },
+            "寄": { hanviet: "ký", pinyin: "jì", meaning: "[Động từ] Gửi (thư, hàng)" },
+            "信": { hanviet: "tín", pinyin: "xìn", meaning: "[Danh từ] Thư, bức thư" },
+            "哪儿": { hanviet: "nơ nhi", pinyin: "nǎr", meaning: "[Đại từ] Ở đâu, chỗ nào" },
+            "没什么": { hanviet: "mộc thậm ma", pinyin: "méi shénme", meaning: "[Cụm từ] Không có gì, không sao cả" },
+            "买": { hanviet: "mãi", pinyin: "mǎi", meaning: "[Động từ] Mua" },
+            "卖": { hanviet: "mại", pinyin: "mài", meaning: "[Động từ] Bán" },
+            "苹果": { hanviet: "bình quả", pinyin: "píngguǒ", meaning: "[Danh từ] Quả táo" },
+            "平安": { hanviet: "bình an", pinyin: "píng'ān", meaning: "[Tính từ] Bình an, an toàn" }
+        };
+
+        let apiKeys = JSON.parse(localStorage.getItem('gemini_api_keys_v5') || '[]');
+        
+        window.onload = function() {
+            let oldKey = localStorage.getItem('gemini_api_key_v4');
+            if (oldKey && oldKey.length > 20 && apiKeys.length === 0) {
+                apiKeys.push({ token: oldKey, cooldown: 0 });
+                localStorage.setItem('gemini_api_keys_v5', JSON.stringify(apiKeys));
+                localStorage.removeItem('gemini_api_key_v4');
+            }
+            
+            let savedVocab = localStorage.getItem('vocab_db_v4');
+            if (savedVocab) {
+                vocab = JSON.parse(savedVocab);
+                vocab.forEach(v => { if(!v.difficulty) v.difficulty = 'normal'; if(!v.hanviet) v.hanviet = ''; });
+            }
+            updateDashboard();
+            renderKeys();
+        };
+
+        function maskKey(key) {
+            if(!key || key.length < 10) return key;
+            return key.substring(0, 8) + '****' + key.substring(key.length - 4);
+        }
+
+        function renderKeys() {
+            let list = document.getElementById('keyList');
+            list.innerHTML = '';
+            let now = Date.now();
+            
+            if(apiKeys.length === 0) {
+                list.innerHTML = `<p style="text-align:center; color:#ff4757; font-size:0.9rem; margin:0;">⚠️ Bạn chưa thiết lập API Key nào.</p>`;
+                return;
+            }
+
+            apiKeys.forEach((kObj, idx) => {
+                let isReady = kObj.cooldown < now;
+                let statusHtml = isReady 
+                    ? `<span class="key-status-badge badge-ready">✅ Sẵn sàng</span>` 
+                    : `<span class="key-status-badge badge-cooldown">⏳ Hồi sức: ${Math.ceil((kObj.cooldown - now)/1000)}s</span>`;
+                
+                list.innerHTML += `
+                    <div class="key-row">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span title="API Key">🔑</span>
+                            <span class="key-mask">${maskKey(kObj.token)}</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:15px;">
+                            ${statusHtml}
+                            <button onclick="deleteKey(${idx})" style="background:none; color:#ff4757; padding:0; margin:0; width:auto; box-shadow:none;" title="Xóa">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addNewKey() {
+            let input = document.getElementById('newApiKey');
+            let key = input.value.trim();
+            let statusEl = document.getElementById('keyStatus');
+            
+            if(key.length < 20) {
+                statusEl.innerText = "❌ Lỗi: API Key không hợp lệ (quá ngắn).";
+                statusEl.className = "status-msg error";
+                return;
+            }
+            if(apiKeys.some(k => k.token === key)) {
+                statusEl.innerText = "❌ Lỗi: Key này đã tồn tại trong Hạm đội.";
+                statusEl.className = "status-msg error";
+                return;
+            }
+            
+            apiKeys.push({ token: key, cooldown: 0 });
+            localStorage.setItem('gemini_api_keys_v5', JSON.stringify(apiKeys));
+            input.value = '';
+            statusEl.innerText = "✅ Đã thêm Key vào Hạm đội!";
+            statusEl.className = "status-msg success";
+            renderKeys();
+        }
+
+        function deleteKey(idx) {
+            if(confirm("Xóa API Key này khỏi hạm đội?")) {
+                apiKeys.splice(idx, 1);
+                localStorage.setItem('gemini_api_keys_v5', JSON.stringify(apiKeys));
+                renderKeys();
+            }
+        }
+
+        setInterval(() => {
+            let needsRender = false;
+            let now = Date.now();
+            apiKeys.forEach(k => {
+                if(k.cooldown > 0) {
+                    needsRender = true;
+                    if(k.cooldown < now) k.cooldown = 0;
+                }
+            });
+            if(needsRender) renderKeys();
+        }, 1000);
+
+        // ====================================================================
+        // KIẾN TRÚC ĐỊNH TUYẾN THÔNG MINH (SMART ROUTER V2)
+        // ====================================================================
+        async function fetchWithSmartRouter(prompt, taskType = 'light') {
+            const modelChain = taskType === 'heavy' 
+                ? ["gemini-2.5-flash", "gemini-3.5-flash"] 
+                : ["gemini-2.5-flash", "gemini-3.1-flash-lite"]; 
+
+            let maxAttempts = Math.max(4, apiKeys.length * 2); 
+            let lastErrorMsg = "Lỗi mạng hoặc hết Key.";
+            let currentModelIndex = 0;
+
+            for (let i = 0; i < maxAttempts; i++) {
+                let availableKeyObj = apiKeys.find(k => k.cooldown < Date.now());
+                if (!availableKeyObj) {
+                    throw new Error(`Toàn bộ hạm đội đang quá tải.\nBáo cáo lỗi gần nhất:\n${lastErrorMsg}`);
+                }
+                
+                let key = availableKeyObj.token;
+                let currentModel = modelChain[currentModelIndex];
+                
+                try {
+                    let url = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${key}`;
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 45000);
+
+                    let response = await fetch(url, {
+                        method: "POST", 
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId); 
+                    let data = await response.json();
+
+                    if (data.error) {
+                        lastErrorMsg = `[Mã Lỗi: ${data.error.code}] ${data.error.message}`;
+                        
+                        if (data.error.code === 429) {
+                            availableKeyObj.cooldown = Date.now() + 60000;
+                            localStorage.setItem('gemini_api_keys_v5', JSON.stringify(apiKeys));
+                            renderKeys();
+                            document.getElementById('glSubtitle').innerHTML = `<span style='color:#ff4757;'>⚠️ Key ${maskKey(key)} hết hạn mức (429). Đổi Key... (Lần ${i+1})</span>`;
+                            await new Promise(res => setTimeout(res, 1000));
+                            continue; 
+                        } 
+                        else if (data.error.code === 503) {
+                            currentModelIndex = (currentModelIndex + 1) % modelChain.length;
+                            document.getElementById('glSubtitle').innerHTML = `<span style='color:#ffa502;'>⚠️ Google nghẽn (503). Tự động rẽ nhánh sang ${modelChain[currentModelIndex]}...</span>`;
+                            await new Promise(res => setTimeout(res, 2000));
+                            continue;
+                        }
+                        
+                        throw new Error(lastErrorMsg);
+                    }
+                    return data; 
+                } catch (err) {
+                    if (err.name === 'AbortError') {
+                        lastErrorMsg = `[Timeout] Google treo quá 45s tại ${currentModel}.`;
+                        availableKeyObj.cooldown = Date.now() + 60000;
+                        localStorage.setItem('gemini_api_keys_v5', JSON.stringify(apiKeys));
+                        renderKeys();
+                        currentModelIndex = (currentModelIndex + 1) % modelChain.length;
+                        
+                        document.getElementById('glSubtitle').innerHTML = `<span style='color:#ff4757;'>⚠️ Bị treo 45s. Rẽ nhánh sang ${modelChain[currentModelIndex]}...</span>`;
+                        continue;
+                    }
+                    
+                    if (err.message.includes('[Mã Lỗi')) throw err;
+                    
+                    lastErrorMsg = err.message;
+                    if (i === maxAttempts - 1) throw err;
+                    await new Promise(res => setTimeout(res, 2000));
+                }
+            }
+            throw new Error(`Thất bại toàn tập sau ${maxAttempts} lần rẽ nhánh hệ thống.\nChi tiết:\n${lastErrorMsg}`);
+        }
+
+        // --- GIAO DIỆN BẢNG THÔNG BÁO LỖI ---
+        function showLoading(title, subtitle, withTimer = false, maxSeconds = 45) {
+            document.getElementById('globalLoading').style.display = 'flex';
+            
+            let icon = document.getElementById('glIcon');
+            icon.innerText = '⏳';
+            icon.style.animation = 'flipHourglass 1.5s infinite ease-in-out';
+            
+            document.getElementById('glTitle').innerText = title;
+            document.getElementById('glSubtitle').innerHTML = subtitle;
+            document.getElementById('glCloseBtn').style.display = 'none';
+            
+            let timerBadge = document.getElementById('glTimer');
+            if (globalTimerInterval) clearInterval(globalTimerInterval);
+            
+            if (withTimer) {
+                timerBadge.style.display = 'inline-block';
+                let elapsed = 0;
+                timerBadge.innerText = `⏱️ ${elapsed}s / ${maxSeconds}s`;
+                
+                globalTimerInterval = setInterval(() => {
+                    elapsed++;
+                    timerBadge.innerText = `⏱️ ${elapsed}s / ${maxSeconds}s`;
+                }, 1000);
+            } else {
+                timerBadge.style.display = 'none';
+            }
+        }
+        
+        function hideLoading() {
+            if (globalTimerInterval) clearInterval(globalTimerInterval);
+            document.getElementById('globalLoading').style.display = 'none';
+        }
+
+        function showError(title, message) {
+            if (globalTimerInterval) clearInterval(globalTimerInterval);
+            document.getElementById('globalLoading').style.display = 'flex';
+            
+            let icon = document.getElementById('glIcon');
+            icon.innerText = '❌';
+            icon.style.animation = 'none'; 
+            
+            document.getElementById('glTitle').innerText = title;
+            document.getElementById('glSubtitle').innerHTML = `
+                <span style="color:#ff4757; font-weight:bold;">Chi tiết mã lỗi (Báo cáo hệ thống):</span><br>
+                <textarea style="width:100%; height:120px; margin-top:10px; font-family:monospace; font-size:0.95rem; border: 2px solid #ff4757; border-radius: 8px; padding: 10px;" readonly>${message}</textarea>
+            `;
+            
+            document.getElementById('glTimer').style.display = 'none';
+            document.getElementById('glCloseBtn').style.display = 'inline-block'; 
+        }
+
+        function saveDb() { localStorage.setItem('vocab_db_v4', JSON.stringify(vocab)); updateDashboard(); renderVocabList(); }
+        
+        function getDueWords() { let today = new Date().toISOString().split('T')[0]; return vocab.filter(w => w.nextReview <= today); }
+        function getOverdueWords() { let d = new Date(); d.setDate(d.getDate() - 3); return vocab.filter(w => w.nextReview <= d.toISOString().split('T')[0]); }
+
+        function updateDashboard() {
+            let due = getDueWords();
+            document.getElementById('dueCount').innerHTML = `Hôm nay cần ôn: <b>${due.length}</b> từ. (Tổng: ${vocab.length})`;
+            let overdue = getOverdueWords();
+            let banner = document.getElementById('overdueBanner');
+            if(overdue.length > 0) { document.getElementById('overdueCount').innerText = overdue.length; banner.style.display = 'flex'; } 
+            else { banner.style.display = 'none'; }
+        }
+
+        function speakWord(text) { 
+            if ('speechSynthesis' in window) { 
+                let synth = window.speechSynthesis;
+                synth.cancel(); 
+                let u = new SpeechSynthesisUtterance(text); 
+                u.lang = 'zh-CN'; 
+                synth.speak(u); 
+            } 
+        }
+
+        function handleEnter(e) { if (e.key === 'Enter') addWordsFast(); }
+
+        function extractSafeJSON(rawText, type = 'array') {
+            try {
+                if (type === 'array') {
+                    let match = rawText.match(/\[[\s\S]*\]/);
+                    if (!match) throw new Error("Không tìm thấy cấu trúc Mảng JSON.");
+                    return JSON.parse(match[0]);
+                } else {
+                    let match = rawText.match(/\{[\s\S]*\}/);
+                    if (!match) throw new Error("Không tìm thấy cấu trúc Đối tượng JSON.");
+                    return JSON.parse(match[0]);
+                }
+            } catch (err) {
+                console.error("Lỗi parse JSON:", rawText);
+                throw new Error("AI trả về dữ liệu rác, không thể đọc hiểu. Lỗi do quá tải tư duy AI.");
+            }
+        }
+
+        async function addWordsFast() {
+            let hInput = document.getElementById('hanzi').value.trim();
+            let status = document.getElementById('addStatus');
+            
+            if (!hInput) return status.innerText = "❌ Thiếu chữ Hán!";
+            if (apiKeys.length === 0) return alert("Vui lòng thiết lập ít nhất 1 API Key trong Hạm đội (Phần Cài đặt AI)!");
+
+            let today = new Date().toISOString().split('T')[0];
+            let words = hInput.split(/[,，]/).map(w => w.trim()).filter(w => w !== "");
+            let wordsToFetchAI = [];
+            let addedCount = 0;
+
+            words.forEach(w => {
+                if (MINI_DICT[w]) {
+                    if(!vocab.some(v => v.hanzi === w)) {
+                        vocab.push({ hanzi: w, hanviet: MINI_DICT[w].hanviet, pinyin: MINI_DICT[w].pinyin, meaning: MINI_DICT[w].meaning, nextReview: today, interval: 1, ease: 2.5, difficulty: 'normal' });
+                        addedCount++;
+                    }
+                } else {
+                    wordsToFetchAI.push(w);
+                }
+            });
+
+            if (wordsToFetchAI.length === 0) {
+                saveDb(); document.getElementById('hanzi').value = '';
+                status.className = "status-msg success"; status.innerText = `⚡ Đã lưu nhanh ${addedCount} từ (0 Token).`;
+                return;
+            }
+
+            let totalWords = wordsToFetchAI.length;
+            let totalSecs = totalWords * 3;
+            let currentWordIdx = 0;
+            
+            showLoading("Đang xử lý Băng chuyền Từ vựng...", `Khởi động... Dự kiến hoàn thành: ${totalSecs} giây`);
+            
+            let timerIntv = setInterval(() => {
+                totalSecs--;
+                if (totalSecs < 0) totalSecs = 0;
+                document.getElementById('glSubtitle').innerHTML = `Đang phân tích từ: <b>${wordsToFetchAI[currentWordIdx] || "Đang kết thúc..."}</b> (${currentWordIdx + 1}/${totalWords})<br>Dự kiến hoàn thành: ${totalSecs} giây`;
+            }, 1000);
+
+            try {
+                for (currentWordIdx = 0; currentWordIdx < totalWords; currentWordIdx++) {
+                    let word = wordsToFetchAI[currentWordIdx];
+                    let prompt = `Phân tích từ tiếng Trung sau: "${word}". 
+YÊU CẦU QUAN TRỌNG: Trả về DUY NHẤT một mảng JSON (KHÔNG dùng markdown).
+Cấu trúc: [{"hanzi": "${word}", "hanviet": "...", "pinyin": "...", "meaning": "[Từ loại] Nghĩa\\n[Từ loại] Nghĩa"}]`;
+
+                    let data = await fetchWithSmartRouter(prompt, 'light');
+                    let rawText = data.candidates[0].content.parts[0].text;
+                    let results = extractSafeJSON(rawText, 'array');
+                    
+                    results.forEach(item => {
+                        if(!vocab.some(v => v.hanzi === item.hanzi)) {
+                            vocab.push({ hanzi: item.hanzi, hanviet: item.hanviet || '', pinyin: item.pinyin, meaning: item.meaning, nextReview: today, interval: 1, ease: 2.5, difficulty: 'normal' });
+                            addedCount++;
+                        }
+                    });
+                    
+                    if(currentWordIdx < totalWords - 1) {
+                        await new Promise(r => setTimeout(r, 2000)); 
+                    }
+                }
+                saveDb(); document.getElementById('hanzi').value = ''; 
+                status.className = "status-msg success"; status.innerText = `✅ Đã học xong ${addedCount} từ vựng.`;
+                hideLoading();
+            } catch (e) { 
+                clearInterval(timerIntv);
+                showError("Lỗi Băng Chuyền Từ Vựng", e.message);
+                status.className = "status-msg error"; status.innerText = `❌ Tiến trình bị gián đoạn.`; 
+            }
+        }
+
+        function openEditModal(hanzi) {
+            let idx = vocab.findIndex(v => v.hanzi === hanzi);
+            if(idx > -1) {
+                let v = vocab[idx];
+                document.getElementById('editOriginalHanzi').value = v.hanzi;
+                document.getElementById('editHanzi').value = v.hanzi;
+                document.getElementById('editHanviet').value = v.hanviet || '';
+                document.getElementById('editPinyin').value = v.pinyin;
+                document.getElementById('editMeaning').value = v.meaning;
+                document.getElementById('editModal').style.display = 'flex';
+            }
+        }
+
+        function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
+        function saveEditVocab() {
+            let oldHanzi = document.getElementById('editOriginalHanzi').value;
+            let idx = vocab.findIndex(v => v.hanzi === oldHanzi);
+            if(idx > -1) {
+                vocab[idx].hanzi = document.getElementById('editHanzi').value.trim();
+                vocab[idx].hanviet = document.getElementById('editHanviet').value.trim();
+                vocab[idx].pinyin = document.getElementById('editPinyin').value.trim();
+                vocab[idx].meaning = document.getElementById('editMeaning').value.trim();
+                saveDb(); closeEditModal(); alert("Đã lưu thay đổi!");
+            }
+        }
+
+        function deleteVocab(hanzi) {
+            if(confirm(`⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa từ [ ${hanzi} ] khỏi kho từ vựng không? (Hành động này không thể hoàn tác)`)) {
+                vocab = vocab.filter(v => v.hanzi !== hanzi);
+                saveDb();
+                alert(`Đã xóa từ [ ${hanzi} ]`);
+            }
+        }
+
+        function toggleVocab() { let area = document.getElementById('vocabArea'); area.style.display = area.style.display === 'block' ? 'none' : 'block'; renderVocabList(); }
+        function setDifficulty(hanzi, diff) { let idx = vocab.findIndex(v => v.hanzi === hanzi); if (idx > -1) { vocab[idx].difficulty = diff; saveDb(); } }
+
+        function formatMeaningWithBadges(meaningStr) {
+            let lines = meaningStr.split('\n');
+            let html = '';
+            lines.forEach(line => {
+                if(line.trim() === '') return;
+                let formattedLine = line.replace(/\[(.*?)\]/g, '<span class="pos-badge">$1</span>');
+                html += `<div class="meaning-line">${formattedLine}</div>`;
+            });
+            return html;
+        }
+
+        function renderVocabList() {
+            let listDiv = document.getElementById('vocabList'); listDiv.innerHTML = '';
+            let searchTerm = document.getElementById('searchVocab') ? document.getElementById('searchVocab').value.toLowerCase().trim() : '';
+            let sortedVocab = [...vocab].reverse(); 
+            
+            if(searchTerm) {
+                sortedVocab = sortedVocab.filter(v => 
+                    v.hanzi.toLowerCase().includes(searchTerm) || 
+                    v.pinyin.toLowerCase().includes(searchTerm) || 
+                    v.meaning.toLowerCase().includes(searchTerm) ||
+                    (v.hanviet && v.hanviet.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if(sortedVocab.length === 0) return listDiv.innerHTML = '<p style="text-align:center; color:#ccc; margin-top:20px;">Không tìm thấy từ vựng nào.</p>';
+
+            sortedVocab.forEach(v => {
+                let diff = v.difficulty || 'normal';
+                let bN = diff === 'normal' ? `<button class="btn-normal" style="border: 2px solid #555;">⚪</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'normal')">⚪</button>`;
+                let bE = diff === 'easy' ? `<button class="btn-easy" style="border: 2px solid #228b22;">🟢 Dễ</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'easy')">🟢</button>`;
+                let bH = diff === 'hard' ? `<button class="btn-hard" style="border: 2px solid #b33939;">🔥 Khó</button>` : `<button class="btn-normal" onclick="setDifficulty('${v.hanzi}', 'hard')">🔥</button>`;
+                
+                let btnEdit = `<button class="btn-normal" onclick="openEditModal('${v.hanzi}')" title="Sửa thông tin">✏️</button>`;
+                let btnDelete = `<button class="btn-normal" style="color: #ff4757;" onclick="deleteVocab('${v.hanzi}')" title="Xóa từ này">🗑️</button>`;
+
+                let masteryPercent = Math.min(100, Math.round((v.interval / 21) * 100));
+                let color = masteryPercent < 30 ? '#ff4757' : (masteryPercent < 70 ? '#ffa502' : '#2ed573');
+                
+                let hanvietHtml = v.hanviet ? `<span class="vocab-hanviet">[${v.hanviet}]</span>` : '';
+                let formattedMeaning = formatMeaningWithBadges(v.meaning);
+
+                listDiv.innerHTML += `
+                    <div class="vocab-item">
+                        <div class="vocab-top">
+                            <div class="vocab-info" style="flex: 1; padding-right: 15px;">
+                                <div class="vocab-info-wrapper">
+                                    <span class="vocab-hanzi">${v.hanzi}</span>
+                                    ${hanvietHtml}
+                                    <button class="speaker-btn-small" onclick="speakWord('${v.hanzi}')">🔊</button>
+                                </div>
+                                <span class="vocab-pinyin">${v.pinyin}</span>
+                                <div class="vocab-meaning">${formattedMeaning}</div>
+                            </div>
+                            <div class="vocab-actions" style="flex-direction: column; align-items: flex-end; gap: 8px;">
+                                <div style="display:flex; gap:4px;">${btnEdit} ${btnDelete}</div>
+                                <div style="display:flex; gap:4px;">${bH} ${bN} ${bE}</div>
+                            </div>
+                        </div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${masteryPercent}%; background-color: ${color};"></div></div>
+                        <span class="mastery-text">Độ ghi nhớ: ${masteryPercent}% (Ôn sau ${v.interval} ngày)</span>
+                    </div>`;
+            });
+        }
+
+        function startOverdueTest() { 
+            let btn = document.getElementById('btnDonDep');
+            if(btn) btn.innerHTML = "⏳ Đang mở...";
+            startTest('overdue'); 
+            setTimeout(() => { if(btn) btn.innerHTML = "Dọn Dẹp"; }, 2000);
+        }
+
+        async function startTest(mode) {
+            if (apiKeys.length === 0) return alert("Vui lòng thiết lập API Key trong Hạm đội trước!");
+
+            currentTestWords = (mode === 'overdue' ? getOverdueWords() : getDueWords()).slice(0, 15);
+            isTestingOverdue = (mode === 'overdue');
+            
+            if (currentTestWords.length === 0) return alert("🎉 Tuyệt vời! Bạn không nợ bài nào.");
+            
+            let tArea = document.getElementById('testArea');
+            tArea.style.display = 'block';
+            document.getElementById('cardTestArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            document.getElementById('submitTestBtn').style.display = 'none';
+            document.getElementById('closeTestBtn').style.display = 'none';
+            document.getElementById('srsConfirmationBlock').style.display = 'none';
+            document.getElementById('evalStatus').innerText = "";
+            
+            showLoading("Đang thiết lập đề thi...", "Hệ thống đang cấu trúc 'Giỏ đi chợ' siêu nhẹ để chống quá tải...", true, 45);
+
+            try {
+                let ngan1 = currentTestWords.map(w => `${w.hanzi} (${w.meaning.replace(/\n/g, ' ')})`).join(" | ");
+                
+                let grammarTypes = ['[Đại từ]', '[Từ nối]', '[Lượng từ]', '[Phó từ]', '[Giới từ]'];
+                let ngan2Arr = vocab.filter(v => grammarTypes.some(t => v.meaning.includes(t)) && !currentTestWords.includes(v));
+                let ngan2 = ngan2Arr.map(v => v.hanzi).join(", ");
+                
+                let remainingVocab = vocab.filter(v => !ngan2Arr.includes(v) && !currentTestWords.includes(v));
+                remainingVocab.sort(() => 0.5 - Math.random()); 
+                let ngan3 = remainingVocab.slice(0, 50).map(v => v.hanzi).join(", ");
+
+                let prompt = `Bạn là chuyên gia kiểm tra tiếng Trung. Hãy tạo ĐỀ THI DỊCH VIỆT-TRUNG.
+NGUYÊN LIỆU ĐƯỢC PHÉP SỬ DỤNG (GIỎ ĐI CHỢ):
+- Ngăn 1 (TỪ MỤC TIÊU BẮT BUỘC KIỂM TRA): [${ngan1}]
+- Ngăn 2 (TỪ KẾT DÍNH CHO PHÉP): [${ngan2}]
+- Ngăn 3 (TỪ VỆ TINH CHO PHÉP): [${ngan3}]
+
+LUẬT THÉP (CẤM VI PHẠM):
+1. Ghép các từ Ngăn 1 với Ngăn 2 và Ngăn 3 để tạo thành câu hoàn chỉnh.
+2. TUYỆT ĐỐI CẤM sử dụng bất kỳ chữ Hán nào KHÔNG CÓ mặt trong Ngăn 2 hoặc Ngăn 3.
+3. Nếu không thể tạo 1 câu dài có nghĩa bằng các từ trên, HÃY CHIA THÀNH NHIỀU ĐOẠN HỘI THOẠI NGẮN. Chấp nhận cả những đoạn hội thoại cực kỳ đơn giản (VD: A: Số mấy? / B: Số 8).
+4. VAN AN TOÀN CUỐI CÙNG: Nếu ngay cả hội thoại ngắn cũng nghe lố bịch, hãy chuyển câu đó thành dạng kiểm tra từ đơn lẻ (VD: question_vn: "Dịch từ sau sang tiếng Trung: Quả táo", expected_chinese: "苹果").
+
+YÊU CẦU ĐẦU RA:
+- KHÔNG sử dụng định dạng code markdown. CHỈ TRẢ VỀ JSON THUẦN TÚY.
+- Trả về DUY NHẤT một mảng JSON theo mẫu:
+[{"question_vn": "Câu hỏi tiếng Việt", "target_hanzi_words": ["từ", "mục", "tiêu"], "expected_chinese": "đáp án tiếng Trung"}]
+- Tạo đúng ${currentTestWords.length} câu hỏi tương ứng với ${currentTestWords.length} từ ở Ngăn 1.`;
+
+                let data = await fetchWithSmartRouter(prompt, 'light');
+                let rawText = data.candidates[0].content.parts[0].text;
+                testDataCache = extractSafeJSON(rawText, 'array');
+                
+                let html = "";
+                testDataCache.forEach((item, index) => {
+                    html += `
+                        <div class="test-item">
+                            <div class="test-question">${index + 1}. ${item.question_vn}</div>
+                            <input type="text" class="test-input" id="answer-${index}" placeholder="Nhập chữ Hán hoặc Pinyin...">
+                            <div class="test-feedback" id="feedback-${index}"></div>
+                        </div>`;
+                });
+                document.getElementById('testQuestionsArea').innerHTML = html;
+                document.getElementById('submitTestBtn').style.display = 'block';
+                hideLoading();
+            } catch (e) { 
+                showError("Lỗi Cấu Trúc Đề Thi", e.message);
+                document.getElementById('testQuestionsArea').innerHTML = `❌ Gặp sự cố khi tải đề. Xem chi tiết trên bảng thông báo lỗi.`; 
+            }
+        }
+
+        async function submitTest() {
+            showLoading("Đang chấm điểm...", "Hệ thống đang rà soát đáp án...", true, 45);
+            document.getElementById('submitTestBtn').style.display = 'none';
+            document.getElementById('evalStatus').innerText = "";
+
+            try {
+                let finalGradingResult = new Array(testDataCache.length);
+                let failedStudentAnswers = [];
+
+                testDataCache.forEach((item, index) => {
+                    let studentAns = document.getElementById(`answer-${index}`).value.trim().toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, "");
+                    let expectedAns = (item.expected_chinese || "").toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, "");
+
+                    if (studentAns === expectedAns && studentAns !== "") {
+                        finalGradingResult[index] = { is_correct: true, feedback: "⚡ Trình duyệt xác thực: Đúng 100% ngữ cảnh bản xứ!", failed_words: [] };
+                    } else {
+                        failedStudentAnswers.push({ index: index, question: item.question_vn, expected_chinese: item.expected_chinese, student_answer: document.getElementById(`answer-${index}`).value.trim(), target_hanzi_words: item.target_hanzi_words });
+                    }
+                });
+
+                if (failedStudentAnswers.length > 0 && apiKeys.length > 0) {
+                    document.getElementById('glSubtitle').innerHTML = "AI đang phân tích cấu trúc ngữ pháp sai lệch...";
+                    let gradingStrictness = vocab.length < 100 ? "CHẤM LỎNG TAY: Chấp nhận mọi cách dịch đúng ngữ pháp." : "CHẤM KHẮT KHE: Đòi hỏi văn phong tự nhiên.";
+                    
+                    let promptForAI = failedStudentAnswers.map(ans => `{question: "${ans.question}", student_answer: "${ans.student_answer}", expected_chinese: "${ans.expected_chinese}"}`).join(", ");
+                    
+                    let prompt = `Chấm ngữ pháp tiếng Trung. Bài làm: [${promptForAI}]. ${gradingStrictness}
+Trả về mảng JSON BẮT BUỘC ĐÚNG THỨ TỰ (KHÔNG dùng markdown):
+[{"is_correct": true/false, "feedback": "Nhận xét lỗi sai"}]`;
+                    
+                    let data = await fetchWithSmartRouter(prompt, 'light');
+                    let rawText = data.candidates[0].content.parts[0].text;
+                    let aiResults = extractSafeJSON(rawText, 'array');
+                    
+                    aiResults.forEach((res, i) => {
+                        let originalIndex = failedStudentAnswers[i].index;
+                        finalGradingResult[originalIndex] = res;
+                    });
+                } else if (failedStudentAnswers.length > 0) {
+                    failedStudentAnswers.forEach(item => {
+                        finalGradingResult[item.index] = { is_correct: false, feedback: `Gõ không khớp. Đáp án chuẩn: ${item.expected_chinese}` };
+                    });
+                }
+
+                let totalFailedWords = [];
+                finalGradingResult.forEach((res, idx) => {
+                    let fbDiv = document.getElementById(`feedback-${idx}`);
+                    fbDiv.style.display = 'block'; fbDiv.innerText = res.feedback;
+                    fbDiv.className = res.is_correct ? "test-feedback fb-correct" : "test-feedback fb-incorrect";
+                    
+                    if (res.is_correct === false || res.is_correct === "false") {
+                        let targetWords = testDataCache[idx].target_hanzi_words;
+                        if (targetWords && Array.isArray(targetWords)) {
+                            targetWords.forEach(w => {
+                                if (!totalFailedWords.includes(w)) totalFailedWords.push(w);
+                            });
+                        }
+                    }
+                });
+                
+                let srsHtml = '';
+                currentTestWords.forEach(w => {
+                    let isFailed = totalFailedWords.includes(w.hanzi);
+                    let statusClass = isFailed ? 'unchecked' : 'checked';
+                    let statusIcon = isFailed ? '❌' : '✅';
+                    let statusText = isFailed ? 'Quên/Sai' : 'Đã nhớ';
+                    
+                    srsHtml += `
+                        <div class="srs-word-check ${statusClass}" onclick="toggleSRSCheck(this)" data-hanzi="${w.hanzi}">
+                            <span class="srs-text">${w.hanzi} (${w.pinyin})</span>
+                            <span class="srs-status-icon" style="font-size:1.2rem;">${statusIcon} ${statusText}</span>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('srsChecklist').innerHTML = srsHtml;
+                document.getElementById('srsConfirmationBlock').style.display = 'block';
+                hideLoading();
+            } catch (e) {
+                showError("Lỗi Hệ Thống Chấm Bài", e.message);
+                document.getElementById('submitTestBtn').style.display = 'block';
+            }
+        }
+
+        function toggleSRSCheck(element) {
+            let iconSpan = element.querySelector('.srs-status-icon');
+            if (element.classList.contains('checked')) {
+                element.classList.remove('checked'); element.classList.add('unchecked'); iconSpan.innerHTML = '❌ Quên/Sai';
+            } else {
+                element.classList.remove('unchecked'); element.classList.add('checked'); iconSpan.innerHTML = '✅ Đã nhớ';
+            }
+        }
+
+        function finalizeSRS() {
+            let wordChecks = document.querySelectorAll('.srs-word-check');
+            wordChecks.forEach(el => {
+                let hanzi = el.getAttribute('data-hanzi');
+                let isRemembered = el.classList.contains('checked'); 
+                let idx = vocab.findIndex(v => v.hanzi === hanzi);
+                if (idx > -1) {
+                    let diff = vocab[idx].difficulty || 'normal';
+                    if (isRemembered) {
+                        let newInterval = vocab[idx].interval * vocab[idx].ease;
+                        if (diff === 'easy') newInterval *= 2.0; if (diff === 'hard') newInterval *= 0.6; 
+                        vocab[idx].interval = Math.max(1, Math.floor(newInterval)); vocab[idx].ease += 0.1;
+                    } else {
+                        vocab[idx].interval = 1; vocab[idx].ease = Math.max(1.3, vocab[idx].ease - 0.2);
+                    }
+                    let nextDate = new Date(); nextDate.setDate(nextDate.getDate() + vocab[idx].interval);
+                    vocab[idx].nextReview = nextDate.toISOString().split('T')[0];
+                }
+            });
+            saveDb();
+            document.getElementById('srsConfirmationBlock').style.display = 'none';
+            document.getElementById('evalStatus').innerText = "✅ Đã lưu điểm chính thức!";
+            document.getElementById('closeTestBtn').style.display = 'block';
+        }
+
+        function closeTest() {
+            document.getElementById('testArea').style.display = 'none';
+            if(isTestingOverdue && getOverdueWords().length > 0) { if(confirm("Còn từ nợ đọng. Làm tiếp nhé?")) startOverdueTest(); } 
+            else if (!isTestingOverdue && getDueWords().length > 0) { if(confirm("Vẫn còn từ cần ôn hôm nay. Làm tiếp nhé?")) startTest('normal'); }
+        }
+
+        // ====================================================================
+        // THUẬT TOÁN "HẠT GIỐNG CHỦ ĐỀ" (THEMATIC SEED) CHO BÀI KHÓA
+        // ====================================================================
+        async function generateDailyContent() {
+            if (apiKeys.length === 0) return alert("Vui lòng thiết lập API Key trong Hạm đội trước!");
+            if (vocab.length < 5) return alert("Cần ít nhất 5 từ để AI viết bài.");
+
+            showLoading("Đang sáng tác bài đọc...", "Hệ thống đang lựa chọn chủ đề tự nhiên nhất từ kho từ vựng...", true, 45);
+            
+            try {
+                // Gửi tối đa 150 chữ Hán để AI có không gian chọn chủ đề
+                let shuffledVocab = [...vocab].sort(() => 0.5 - Math.random()).slice(0, 150);
+                let wordPool = shuffledVocab.map(v => v.hanzi).join(", "); 
+
+                let prompt = `Bạn là một nhà văn/nhà báo người Trung Quốc. Dưới đây là kho từ vựng của học viên: [${wordPool}].
+Nhiệm vụ của bạn là tạo MỘT BÀI ĐỌC để rèn luyện thói quen đọc mỗi ngày.
+
+YÊU CẦU:
+1. Tự động chọn một CHỦ ĐỀ mạch lạc dựa trên các từ có liên quan trong kho.
+2. Tự chọn HÌNH THỨC phù hợp (Nhật ký, Bản tin, Truyện ngắn, Thư từ, hoặc Hội thoại). 
+   - NẾU là Hội thoại: BẮT BUỘC phải dùng phím Enter/xuống dòng giữa các nhân vật (VD: A: Xin chào.\\nB: Chào bạn.).
+3. VĂN PHONG TỰ NHIÊN 100%: Câu văn phải hoàn toàn tự nhiên, chuẩn giọng điệu người bản xứ.
+   - Ưu tiên tối đa việc sử dụng từ trong kho.
+   - NẾU kho thiếu các từ nối, trợ từ (như 的, 了, 吗, 呢...) hoặc hư từ cần thiết để câu văn trôi chảy, BẠN ĐƯỢC PHÉP DÙNG THÊM để đảm bảo độ tự nhiên 100%, nhưng tuyệt đối không dùng thêm danh từ/động từ/tính từ phức tạp ngoài kho.
+4. KHÔNG sử dụng định dạng markdown. CHỈ TRẢ VỀ JSON theo cấu trúc sau:
+{
+  "hanzi": "Nội dung tiếng Trung (dùng ký tự \\n để xuống dòng nếu cần)",
+  "pinyin": "Pinyin tương ứng (dùng ký tự \\n để xuống dòng)",
+  "vietnamese": "Bản dịch tiếng Việt (dùng ký tự \\n để xuống dòng)"
+}`;
+                
+                let data = await fetchWithSmartRouter(prompt, 'heavy');
+                let rawText = data.candidates[0].content.parts[0].text;
+                let storyData = extractSafeJSON(rawText, 'object');
+                
+                // Xử lý ngắt dòng HTML
+                let hanziHtml = (storyData.hanzi || "").replace(/\n/g, '<br>');
+                let pinyinHtml = (storyData.pinyin || "").replace(/\n/g, '<br>');
+                let vietnameseHtml = (storyData.vietnamese || "").replace(/\n/g, '<br>');
+
+                let area = document.getElementById('dailyContentArea');
+                
+                // UI Sạch: Lược bỏ Audio Player & Bảng Thống Kê
+                let htmlContent = `
+                    <div class="story-hanzi">${hanziHtml}</div>
+                    <hr class="story-divider">
+                    <div class="story-section story-pinyin">${pinyinHtml}</div>
+                    <hr class="story-divider">
+                    <div class="story-section story-vietnamese">${vietnameseHtml}</div>
+                `;
+                
+                localStorage.setItem('daily_content_v4', htmlContent); 
+                localStorage.setItem('daily_date_v4', new Date().toISOString().split('T')[0]);
+                area.innerHTML = htmlContent; 
+                area.style.display = 'block';
+                hideLoading();
+            } catch (e) { 
+                showError("Lỗi Sáng Tác Bài Đọc", e.message);
+            }
+        }
+
+        async function upgradeOldVocab() {
+            let status = document.getElementById('keyStatus');
+            if (apiKeys.length === 0) return alert("Vui lòng thiết lập API Key trong Hạm đội trước!");
+
+            let wordsToUpdate = vocab.filter(v => !v.hanviet || !v.meaning.includes('['));
+            if (wordsToUpdate.length === 0) return alert("🎉 Tuyệt vời! Toàn bộ kho từ vựng đã được chuẩn hóa.");
+
+            showLoading("Đang chuẩn hóa dữ liệu...", `Hệ thống đang sửa chữa ${wordsToUpdate.length} từ cũ...`, true, 45);
+
+            try {
+                let hanziList = wordsToUpdate.map(w => w.hanzi).join(", ");
+                let prompt = `Bạn là chuyên gia ngôn ngữ. Chuẩn hóa danh sách chữ Hán: [${hanziList}].
+                YÊU CẦU TUYỆT ĐỐI: KHÔNG DÙNG MARKDOWN.
+                Trả về DUY NHẤT một mảng JSON: [{"hanzi": "...", "hanviet": "...", "pinyin": "...", "meaning": "[Từ loại] Nghĩa 1\\n[Từ loại 2] Nghĩa 2"}]`;
+
+                let data = await fetchWithSmartRouter(prompt, 'heavy');
+                let rawText = data.candidates[0].content.parts[0].text;
+                let results = extractSafeJSON(rawText, 'array');
+
+                results.forEach(newItem => {
+                    let idx = vocab.findIndex(v => v.hanzi === newItem.hanzi);
+                    if(idx > -1) {
+                        vocab[idx].hanviet = newItem.hanviet;
+                        vocab[idx].meaning = newItem.meaning;
+                    }
+                });
+                saveDb();
+                hideLoading();
+                status.className = "status-msg success"; status.innerText = "✅ Nâng cấp thành công!";
+            } catch(e) { 
+                showError("Lỗi Nâng Cấp Từ Vựng", e.message);
+                status.className = "status-msg error"; status.innerText = `❌ Lỗi chuẩn hóa. Xem chi tiết trên thông báo.`; 
+            }
+        }
+
+        function exportData() { document.getElementById('backupData').value = JSON.stringify(vocab); }
+        function importData() { try { vocab = JSON.parse(document.getElementById('backupData').value); saveDb(); alert("Xong!"); } catch { alert("Lỗi mã!"); } }
+    </script>
+</body>
+</html>
